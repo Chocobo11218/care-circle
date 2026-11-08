@@ -1,16 +1,30 @@
-import { Link } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
+import Button from '../../components/Button'
+import PageShell from '../../components/PageShell'
+import { useSession } from '../../hooks/useSession'
+import { homePath, readLocal } from '../../lib/onboarding'
 import { t } from '../../i18n/en'
+import familyIllustration from '../../assets/family-hug.svg'
 
 export default function Landing() {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold">{t.appName}</h1>
-      <Link
-        to="/create-account"
-        className="mt-4 inline-block rounded-xl bg-btn-primary px-6 py-3 text-white"
-      >
-        {t.landing.getStarted}
-      </Link>
+  const { loading, me, circle } = useSession()
+  const navigate = useNavigate()
+  const [showStatus, setShowStatus] = useState(false)
+  if (loading) return null
+  if (readLocal('carecircle_onboarded') === 'true' && me && circle) return <Navigate to={homePath(me.role)} replace />
+  return <PageShell><div className="onboarding-page landing-page">
+    <h1 className="onboarding-title">{t.appName}</h1>
+    <div className="flex flex-1 items-center justify-center py-10">
+      <img src={familyIllustration} alt={t.landing.illustration} className="landing-illustration max-w-full" />
     </div>
-  )
+    <footer className="bottom-actions">
+      <Button className="rounded-full" onClick={() => navigate('/create-account')}>{t.landing.getStarted}</Button>
+      <p className="flex flex-wrap items-center justify-center gap-x-1 text-center">
+        {t.landing.alreadyHaveAccount}
+        <Link to="/" className="inline-flex min-h-14 items-center underline" onClick={event => { event.preventDefault(); setShowStatus(true) }}>{t.landing.signIn}</Link>
+      </p>
+      {showStatus && <p role="status" className="text-center">{t.landing.signInUnavailable}</p>}
+    </footer>
+  </div></PageShell>
 }

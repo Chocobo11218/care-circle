@@ -10,6 +10,17 @@
   --color-tint-slate: #F1F5F9;    
   --color-tint-mint: #DBF8F3;     
 
+  /* Semantic aliases used by the existing shared components. */
+  --color-support-1: var(--color-tint-sky);
+  --color-support-2: var(--color-tint-slate);
+  --color-support-3: var(--color-tint-mint);
+  --color-stroke: var(--color-btn-border);
+  --color-input-stroke: var(--color-input-border);
+  --color-ink: #000000;
+  --color-muted: #475569;
+  --color-error: #b91c1c;
+  --shadow-card: 0 0 8px 0 rgb(0 0 0 / 20%);
+
   /* Buttons */
   --color-btn-primary: #00686D;   
   --color-btn-secondary: #334155; 
@@ -25,3 +36,28 @@ body {
   background-color: var(--color-canvas);
   font-size: 18px; /* larger base size for older adults */
 }
+
+body { margin: 0; color: var(--color-ink); font-family: var(--font-sans); }
+button, input, a { font: inherit; }
+button:not(:disabled), a { cursor: pointer; }
+:focus-visible { outline: 3px solid var(--color-btn-primary); outline-offset: 4px; }
+.onboarding-page { display: flex; flex-direction: column; min-height: calc(100dvh - 3rem); }
+.onboarding-page > header { min-height: 3.5rem; margin-bottom: 0.75rem; }
+.onboarding-title { text-align: center; font-size: 1.5rem; line-height: 1.25; font-weight: 600; overflow-wrap: anywhere; }
+.landing-page > .onboarding-title { margin-top: 3.875rem; }
+.form-stack { display: flex; flex-direction: column; gap: 1rem; }
+.form-error { margin-top: 1rem; color: var(--color-error); }
+.choice-stack { display: flex; flex-direction: column; gap: 1.25rem; margin-top: 2.5rem; }
+.choice-card { display: flex; align-items: center; gap: 0.75rem; width: 100%; min-height: 7.5625rem; padding: 1.25rem 1rem; text-align: left; border-radius: 0.75rem; background: var(--color-surface); box-shadow: var(--shadow-card); }
+.choice-icon { display: flex; align-items: center; flex-shrink: 0; color: var(--color-muted); }
+.bottom-actions { display: flex; flex-direction: column; gap: 0.5rem; padding-bottom: env(safe-area-inset-bottom, 0px); }
+.invite-code { margin-top: 1.5rem; padding: 0.75rem 1rem; border-radius: 1rem; background: var(--color-surface); box-shadow: var(--shadow-card); text-align: center; font-size: 2rem; font-weight: 600; letter-spacing: 0.3em; overflow-wrap: anywhere; }
+.permission-card { border: 1px solid var(--color-stroke); }
+.switch-track { display: flex; flex-shrink: 0; align-items: center; width: 3rem; height: 1.75rem; padding: 0.25rem; border-radius: 999px; }
+.switch-thumb { width: 1.25rem; height: 1.25rem; background: var(--color-surface); border-radius: 999px; transition: transform 150ms ease; }
+@media (prefers-reduced-motion: reduce) { .switch-thumb { transition: none; } }
+/* Shared Button keeps its default radius; onboarding uses the Figma pill shape. */
+.onboarding-page button.rounded-full { border-radius: 9999px; }
+
+/* Clip the export’s one-pixel canvas edge outside the illustration artwork. */
+.landing-illustration { clip-path: inset(0 0 1px 0); }

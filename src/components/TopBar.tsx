@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router-dom'
+import { t } from '../i18n/en'
 
 export default function TopBar({
   title,
@@ -13,8 +14,8 @@ export default function TopBar({
       {showBack && (
         <button
           onClick={() => navigate(-1)}
-          aria-label="Back"
-          className="flex h-12 w-12 items-center justify-center rounded-full border border-stroke bg-surface text-xl"
+          aria-label={t.common.back}
+          className="flex h-14 w-14 items-center justify-center rounded-full border border-stroke bg-surface text-xl"
         >
           ←
         </button>

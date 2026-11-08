@@ -1,12 +1,34 @@
 export const en = {
   appName: 'CareCircle',
-  landing: {
-    getStarted: 'Get started',
-    signIn: 'Sign in',
+  common: { back: 'Back', continue: 'Continue', submit: 'Submit', working: 'Working…',
+    error: 'Something went wrong. Please try again.', loading: 'Loading…' },
+  landing: { getStarted: 'Get started', signIn: 'Sign in', alreadyHaveAccount: 'Already have an account?',
     signInUnavailable: 'Sign in is not available in this version.',
-  },
+    illustration: 'Family members coming together' },
+  createAccount: { title: 'Create account', email: 'Email', password: 'Password', or: 'or',
+    google: 'Continue with Google', error: 'Unable to sign in. Please try again.' },
+  selectRole: { title: 'Who is using this phone?', family: 'Family member', elderly: 'Elderly',
+    familyDescription: 'Help coordinate care and stay updated.',
+    elderlyDescription: 'A simple view of family activities and care updates.' },
+  name: { title: 'What’s your name?', firstName: 'First name', lastName: 'Last name' },
+  birthday: { title: 'When’s your birthday?', label: 'Birthday', placeholder: 'DD/MM/YYYY',
+    error: 'Enter a real date from 1900 onwards that is not in the future.' },
+  getStarted: { title: 'Get started', create: 'Create a new Circle', join: 'Join a Circle',
+    createDescription: 'Create your own Circle for your family members or friends to join.',
+    joinDescription: 'If your family or friends have already created a Circle, join them by entering the invitation code.' },
+  createCircle: { title: 'Give your Circle a name', label: 'Circle name', placeholder: 'Adam Family',
+    error: 'Unable to create your Circle. Please try again.' },
+  joinCircle: { title: 'Join a Circle', label: 'Invite code', placeholder: 'Enter your invite code',
+    invalidCode: 'That invite code is incorrect. Please check it and try again.',
+    error: 'Unable to join the Circle. Please try again.' },
+  shareInvite: { title: 'Share this invite code with your family', code: 'Invite code',
+    share: 'Share invite', done: 'I’m done sharing', copied: 'Copied',
+    error: 'Unable to share the invite. Please try again.' },
+  permission: { title: 'CareCircle requires these permissions to work properly',
+    location: 'Location', locationDescription: "Let your Circle know you’re safe.",
+    notifications: 'Notifications', notificationsDescription: 'Get reminders and care updates.',
+    continue: 'Allow & continue', error: 'Unable to save your choices. Please try again.' },
+  home: { family: 'Family Home', elderly: 'Elderly Home', firstName: 'First name', circle: 'Circle' },
 } as const
 
 export const t = en
-
-// We’ll add strings screen by screen. When you translate later, you’ll create th.ts with the same shape.
