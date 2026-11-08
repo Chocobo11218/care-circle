@@ -1,45 +1,39 @@
-import { useState } from 'react'
-import { supabase } from '../../lib/supabase'
+import { useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import Button from '../../components/Button'
+import Input from '../../components/Input'
+import OnboardingLayout from '../../components/OnboardingLayout'
 import { useSession } from '../../hooks/useSession'
-import type { Member } from '../../types'
+import { t } from '../../i18n/en'
+import googleLogo from '../../assets/google.svg'
 
 export default function CreateAccount() {
-  const { ensureSignedIn, refresh, me, circle } = useSession()
-  const [out, setOut] = useState('')
-  const [members, setMembers] = useState<Member[]>([])
-
-  async function run() {
-    setOut('Working...')
-    await ensureSignedIn()
-    const { data, error } = await supabase.rpc('create_circle', {
-      p_name: 'Test Circle',
-      p_role: 'family',
-      p_first_name: 'Test',
-      p_last_name: 'User',
-      p_birthday: '1990-01-01',
-    })
-    if (error) return setOut(`Error: ${error.message}`)
-    setOut(`Created "${data.name}" with code ${data.invite_code}`)
-    await refresh()
-    const { data: m } = await supabase.from('members').select('*').eq('circle_id', data.id)
-    setMembers((m as Member[]) ?? [])
+  const { ensureSignedIn } = useSession()
+  const navigate = useNavigate()
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+  const pending = useRef(false)
+  async function signIn() {
+    if (pending.current) return
+    pending.current = true
+    setBusy(true); setError('')
+    try { await ensureSignedIn(); setEmail(''); setPassword(''); navigate('/select-role') }
+    catch { setError(t.createAccount.error) }
+    finally { pending.current = false; setBusy(false) }
   }
-
-  return (
-    <div className="space-y-3 p-6">
-      <button onClick={run} className="rounded-xl bg-btn-primary px-6 py-3 text-white">
-        Run create_circle test
-      </button>
-      <p>{out}</p>
-      <p>Me: {me ? `${me.first_name} (${me.role})` : 'none'}</p>
-      <p>Circle: {circle ? circle.invite_code : 'none'}</p>
-      <ul className="list-disc pl-6">
-        {members.map((m) => (
-          <li key={m.id}>
-            {m.first_name} {m.is_mock ? '(mock)' : '(real)'} {m.match_label ?? ''}
-          </li>
-        ))}
-      </ul>
-    </div>
-  )
+  return <OnboardingLayout title={t.createAccount.title}>
+    <div className="mb-5 border-b-4 border-btn-primary py-3 text-center font-medium">{t.createAccount.email}</div>
+    <form className="form-stack" noValidate onSubmit={event => { event.preventDefault(); if (email.trim() && password) void signIn() }}>
+      <Input label={t.createAccount.email} placeholder={t.createAccount.email} type="email" autoComplete="off" value={email} onChange={event => setEmail(event.target.value)} />
+      <Input label={t.createAccount.password} placeholder={t.createAccount.password} type="password" autoComplete="off" value={password} onChange={event => setPassword(event.target.value)} />
+      <Button type="submit" variant="secondary" className="rounded-full" disabled={!email.trim() || !password || busy}>{busy ? t.common.working : t.common.continue}</Button>
+    </form>
+    <p className="my-5 text-center text-muted">{t.createAccount.or}</p>
+    <Button type="button" variant="outline" disabled={busy} onClick={() => void signIn()} className="flex items-center justify-center gap-3 rounded-full">
+      <img src={googleLogo} alt="" />{t.createAccount.google}
+    </Button>
+    {error && <p role="alert" className="form-error">{error}</p>}
+  </OnboardingLayout>
 }
