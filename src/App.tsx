@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { SessionProvider } from './lib/session'
+import { TaskDraftProvider } from './lib/task-draft'
 import { DraftProvider } from './lib/draft'
 import OnboardingGuard from './components/OnboardingGuard'
 import Landing from './pages/onboarding/Landing'
@@ -21,7 +22,7 @@ import NewTaskPlaceholder from './pages/family/NewTaskPlaceholder'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
 export default function App() {
-  return <BrowserRouter><SessionProvider><DraftProvider><Routes>
+  return <BrowserRouter><SessionProvider><DraftProvider><TaskDraftProvider><Routes>
     <Route path="/" element={<Landing />} />
     <Route path="/create-account" element={<OnboardingGuard><CreateAccount /></OnboardingGuard>} />
     <Route path="/select-role" element={<OnboardingGuard><SelectRole /></OnboardingGuard>} />
@@ -41,5 +42,5 @@ export default function App() {
     </Route>
     <Route path="/family/home" element={<Navigate to="/family" replace />} />
     <Route path="/elderly/home" element={<OnboardingGuard step="membership"><ElderlyHome /></OnboardingGuard>} />
-  </Routes></DraftProvider></SessionProvider></BrowserRouter>
+  </Routes></TaskDraftProvider></DraftProvider></SessionProvider></BrowserRouter>
 }

@@ -1,12 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { readFile } from 'node:fs/promises'
-import ts from 'typescript'
-const compile = source => ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext, target: ts.ScriptTarget.ES2022 } }).outputText
-const dataUrl = source => `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`
-const stringsUrl = dataUrl(compile(await readFile(new URL('../src/i18n/en.ts', import.meta.url), 'utf8')))
-const source = compile(await readFile(new URL('../src/lib/family.ts', import.meta.url), 'utf8')).replace("'../i18n/en'", JSON.stringify(stringsUrl))
-const { localGreeting, localDate, joinedTime, avatarTone, memberInitial } = await import(dataUrl(source))
+import { loadTypeScript } from './load-typescript.mjs'
+const { localGreeting, localDate, joinedTime, avatarTone, memberInitial } = await loadTypeScript(new URL('../src/lib/family.ts', import.meta.url))
 
 test('greetings change at noon and 18:00 on the local clock', () => {
   assert.equal(localGreeting('Gunn', new Date(2026, 9, 12, 11, 59)), 'Good morning, Gunn')
