@@ -53,17 +53,25 @@ export function useMembers() {
       }))
     }
 
+    // Start the initial snapshot after the subscription is ready, buffering events during the fetch.
+    // The fallback keeps the member list usable when Realtime cannot connect.
+    const startupTimer = window.setTimeout(() => { void fetchMembers() }, 1000)
     const channel = supabase.channel(`members:${circleId}`)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'members', filter: `circle_id=eq.${circleId}` }, receive)
       // DELETE payloads may contain only the primary key with RLS. Ignore ids outside the current list.
       .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'members' }, receive)
-      .subscribe(status => { if (status === 'SUBSCRIBED') void fetchMembers() })
+      .subscribe(status => {
+        if (status === 'SUBSCRIBED' || status === 'CHANNEL_ERROR' || status === 'TIMED_OUT') {
+          window.clearTimeout(startupTimer)
+          void fetchMembers()
+        }
+      })
     reload.current = fetchMembers
-    void fetchMembers()
     const onVisible = () => { if (document.visibilityState === 'visible') void fetchMembers() }
     document.addEventListener('visibilitychange', onVisible)
     return () => {
       active = false
+      window.clearTimeout(startupTimer)
       reload.current = null
       document.removeEventListener('visibilitychange', onVisible)
       void supabase.removeChannel(channel)
