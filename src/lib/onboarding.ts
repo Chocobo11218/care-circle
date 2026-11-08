@@ -10,7 +10,7 @@ export function missingStep(draft: Draft, step: 'name' | 'birthday' | 'circle') 
 }
 
 export function homePath(role: Role) {
-  return role === 'elderly' ? '/elderly/home' : '/family/home'
+  return role === 'elderly' ? '/elderly/home' : '/family'
 }
 
 export function readLocal(key: string): string | null {
