@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { SessionProvider } from './lib/session'
 import { DraftProvider } from './lib/draft'
 import OnboardingGuard from './components/OnboardingGuard'
@@ -13,6 +13,11 @@ import JoinCircle from './pages/onboarding/JoinCircle'
 import ShareInvite from './pages/onboarding/ShareInvite'
 import Permission from './pages/onboarding/Permission'
 import FamilyHome from './pages/family/FamilyHome'
+import FamilyLayout from './components/family/FamilyLayout'
+import FamilyTasks from './pages/family/FamilyTasks'
+import FamilyMembers from './pages/family/FamilyMembers'
+import FamilyAddMember from './pages/family/FamilyAddMember'
+import NewTaskPlaceholder from './pages/family/NewTaskPlaceholder'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
 export default function App() {
@@ -27,7 +32,14 @@ export default function App() {
     <Route path="/join-circle" element={<OnboardingGuard step="circle"><JoinCircle /></OnboardingGuard>} />
     <Route path="/share-invite" element={<OnboardingGuard step="membership"><ShareInvite /></OnboardingGuard>} />
     <Route path="/permission" element={<OnboardingGuard step="membership"><Permission /></OnboardingGuard>} />
-    <Route path="/family/home" element={<OnboardingGuard step="membership"><FamilyHome /></OnboardingGuard>} />
+    <Route path="/family" element={<OnboardingGuard step="membership" role="family"><FamilyLayout /></OnboardingGuard>}>
+      <Route index element={<FamilyHome />} />
+      <Route path="tasks" element={<FamilyTasks />} />
+      <Route path="members" element={<FamilyMembers />} />
+      <Route path="add-member" element={<FamilyAddMember />} />
+      <Route path="tasks/new" element={<NewTaskPlaceholder />} />
+    </Route>
+    <Route path="/family/home" element={<Navigate to="/family" replace />} />
     <Route path="/elderly/home" element={<OnboardingGuard step="membership"><ElderlyHome /></OnboardingGuard>} />
   </Routes></DraftProvider></SessionProvider></BrowserRouter>
 }
