@@ -5,7 +5,7 @@ import PageShell from '../../components/PageShell'
 import { useSession } from '../../hooks/useSession'
 import { homePath, readLocal } from '../../lib/onboarding'
 import { t } from '../../i18n/en'
-import familyIllustration from '../../assets/onboarding-family.svg'
+import familyIllustration from '../../assets/family-hug.svg'
 
 export default function Landing() {
   const { loading, me, circle } = useSession()
