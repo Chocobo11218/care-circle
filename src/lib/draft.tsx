@@ -1,12 +1,10 @@
 import { useEffect, useState, type ReactNode } from 'react'
-import { DraftContext, emptyDraft, type Draft } from './draft-context'
-
-const KEY = 'carecircle_draft'
+import { DraftContext, draftStorageKey, emptyDraft, type Draft } from './draft-context'
 
 export function DraftProvider({ children }: { children: ReactNode }) {
   const [draft, setDraft] = useState<Draft>(() => {
     try {
-      const saved = localStorage.getItem(KEY)
+      const saved = localStorage.getItem(draftStorageKey)
       return saved ? { ...emptyDraft, ...JSON.parse(saved) } : emptyDraft
     } catch {
       return emptyDraft
@@ -15,7 +13,7 @@ export function DraftProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     try {
-      localStorage.setItem(KEY, JSON.stringify(draft))
+      localStorage.setItem(draftStorageKey, JSON.stringify(draft))
     } catch {
       /* storage unavailable: the draft just won't survive a refresh */
     }

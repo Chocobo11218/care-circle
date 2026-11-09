@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState, type ReactNode } from 'react'
 import { supabase } from './supabase'
+import { draftStorageKey } from './draft-context'
 import { SessionContext } from './session-context'
 import type { Circle, Member } from '../types'
 
@@ -62,10 +63,12 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   }, [userId, loadMembership])
 
   const resetDevice = useCallback(async () => {
-    await supabase.auth.signOut()
-    localStorage.clear()
-    sessionStorage.clear()
-    window.location.href = '/'
+    const { error } = await supabase.auth.signOut({ scope: 'local' })
+    if (error) throw error
+    try {
+      localStorage.removeItem(draftStorageKey)
+    } catch { /* Storage can be unavailable on this device. */ }
+    window.location.replace('/')
   }, [])
 
   return (
