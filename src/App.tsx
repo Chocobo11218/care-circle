@@ -28,6 +28,7 @@ import TaskDetails from './pages/family/TaskDetails'
 import ElderlyLayout from './pages/elderly/ElderlyLayout'
 import ElderlyTasks from './pages/elderly/ElderlyTasks'
 import ElderlyTaskDetails from './pages/elderly/ElderlyTaskDetails'
+import ElderlyMembers from './pages/elderly/ElderlyMembers'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
 export default function App() {
@@ -60,6 +61,7 @@ export default function App() {
     <Route path="/family/home" element={<Navigate to="/family" replace />} />
     <Route path="/elderly" element={<OnboardingGuard step="membership" role="elderly"><ElderlyLayout /></OnboardingGuard>}>
       <Route index element={<ElderlyHome />} />
+      <Route path="members" element={<ElderlyMembers />} />
       <Route path="tasks" element={<ElderlyTasks />} />
       <Route path="tasks/:id" element={<ElderlyTaskDetails />} />
     </Route>

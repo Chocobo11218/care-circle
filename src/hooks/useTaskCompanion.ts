@@ -5,4 +5,3 @@ export function useTaskCompanion(task?: Task) {
   const { members } = useFamilyMembers()
   return members.find(member => member.id === task?.assignee_id)
 }
-
