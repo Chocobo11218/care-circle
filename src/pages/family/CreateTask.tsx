@@ -13,7 +13,7 @@ import { useCreateTask } from '../../hooks/useCreateTask'
 import AssignmentIcon from '../../components/tasks/AssignmentIcon'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useLocalClock } from '../../hooks/useLocalClock'
-import { assignmentCandidates, splitMembers } from '../../lib/members'
+import { splitMembers } from '../../lib/members'
 import { localISODate } from '../../lib/date'
 import { validateTaskDraft, type TaskErrors } from '../../lib/tasks'
 import { t } from '../../i18n/en'
@@ -32,7 +32,7 @@ export default function CreateTask() {
   const selectedElderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
   const elderError = elders.length > 0 && !selectedElderId ? errors.elderId : undefined
   const blocked = loading || (memberError && !members.length) || busy
-  const chosen = me?.id === draft.assigneeId ? me : assignmentCandidates(members, me?.id).find(member => member.id === draft.assigneeId)
+  const chosen = me?.id === draft.assigneeId ? me : members.find(member => member.role === 'family' && member.id === draft.assigneeId)
 
   function validate() {
     if (blocked || !me) return false
