@@ -103,7 +103,6 @@ export default function ChooseFamilyMemberPage({ task, candidates, currentMember
       <Button type="button" variant="secondary" className="family-pill" disabled={!selected || busy || assigned} onClick={() => { if (selected) onSend(selected.id) }}>
         {busy ? strings.sending : isDraft ? strings.confirm : strings.send}
       </Button>
-      <button type="button" className="assignment-text-action" disabled={busy} onClick={() => { onSelect(null); onBack() }}>{strings.someoneElse}</button>
     </footer>
   </>
 }
