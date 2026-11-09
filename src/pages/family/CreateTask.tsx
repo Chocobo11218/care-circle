@@ -9,49 +9,52 @@ import TaskIcon from '../../components/tasks/TaskIcon'
 import { useSession } from '../../hooks/useSession'
 import { useTaskDraft } from '../../hooks/useTaskDraft'
 import { useFamilyMembers } from '../../hooks/useFamilyMembers'
-import { useFamilyTasks } from '../../hooks/useFamilyTasks'
+import { useCreateTask } from '../../hooks/useCreateTask'
+import AssignmentIcon from '../../components/tasks/AssignmentIcon'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useLocalClock } from '../../hooks/useLocalClock'
-import { splitMembers } from '../../lib/members'
+import { assignmentCandidates, splitMembers } from '../../lib/members'
 import { localISODate } from '../../lib/date'
-import { taskInsert, validateTaskDraft, type TaskErrors } from '../../lib/tasks'
-import { supabase } from '../../lib/supabase'
+import { validateTaskDraft, type TaskErrors } from '../../lib/tasks'
 import { t } from '../../i18n/en'
-import type { Task } from '../../types'
 
 export default function CreateTask() {
-  const { me, circle } = useSession()
+  const { me } = useSession()
   const { draft, update, clear } = useTaskDraft()
   const { members, loading, error: memberError, refetch } = useFamilyMembers()
-  const { acceptTask } = useFamilyTasks()
+  const { create, busy, error: saveError } = useCreateTask()
   const now = useLocalClock()
   const navigate = useNavigate()
   const [errors, setErrors] = useState<TaskErrors>({})
-  const [saveError, setSaveError] = useState(false)
-  const [busy, setBusy] = useState(false)
-  const pending = useRef(false)
   const formRef = useRef<HTMLFormElement>(null)
-  useScreenEvent('/family/tasks/new')
+  useScreenEvent('create_task')
   const elders = splitMembers(members).realElders
   const selectedElderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
   const elderError = elders.length > 0 && !selectedElderId ? errors.elderId : undefined
   const blocked = loading || (memberError && !members.length) || busy
-  async function save(selfAssign: boolean) {
-    if (pending.current || blocked || !me || !circle) return
+  const chosen = assignmentCandidates(members, me?.id).find(member => member.id === draft.assigneeId)
+
+  function validate() {
+    if (blocked || !me) return false
     const nextErrors = validateTaskDraft(draft, elders.map(elder => elder.id), selectedElderId)
-    setErrors(nextErrors); setSaveError(false)
-    if (Object.keys(nextErrors).length) {
-      requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
-      return
-    }
-    pending.current = true; setBusy(true)
-    try {
-      const { data, error } = await supabase.from('tasks').insert(taskInsert(draft, circle.id, me.id, selectedElderId, selfAssign)).select('*').single()
-      if (error || !data) throw error ?? new Error('Task insert returned no row')
-      acceptTask(data as Task); clear()
-      navigate(selfAssign ? `/family/tasks/${data.id}` : '/family/tasks', { replace: true })
-    } catch { setSaveError(true) }
-    finally { pending.current = false; setBusy(false) }
+    setErrors(nextErrors)
+    if (!Object.keys(nextErrors).length) return true
+    requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
+    return false
+  }
+
+  function openPicker() {
+    if (!validate()) return
+    update({ elderId: selectedElderId })
+    navigate('/family/tasks/new/choose-member', { state: { from: '/family/tasks/new' } })
+  }
+
+  async function save(selfAssign: boolean) {
+    if (!validate() || !me) return
+    const task = await create(draft, selectedElderId, selfAssign ? me.id : chosen?.id ?? null)
+    if (!task) return
+    clear()
+    navigate(selfAssign ? `/family/tasks/${task.id}` : '/family/tasks', { replace: true })
   }
   function submit(event: FormEvent) { event.preventDefault(); void save(false) }
   return <>
@@ -76,7 +79,20 @@ export default function CreateTask() {
       </section>
       <section><label htmlFor="task-description" className="task-section-label">{t.taskCreate.description}</label><textarea id="task-description" className="task-textarea" placeholder={t.taskCreate.descriptionPlaceholder} value={draft.description} disabled={busy} onChange={event => update({ description: event.target.value })} /></section>
       <section><label htmlFor="task-note" className="task-section-label">{t.taskCreate.notes}</label><textarea id="task-note" className="task-textarea task-note-input" placeholder={t.taskCreate.notesPlaceholder} value={draft.note} disabled={busy} onChange={event => update({ note: event.target.value })} /></section>
-      <section><h2>{t.taskCreate.responsibility}</h2><div className="task-responsibility"><Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={() => void save(true)}>{busy ? t.taskCreate.saving : t.taskCreate.assign}</Button></div></section>
+      <section>
+        <h2>{t.taskCreate.responsibility}</h2>
+        <div className="task-responsibility">
+          {chosen ? <>
+            <div className="task-assignee"><Avatar name={chosen.first_name} small /><p>{t.taskList.assigned(chosen.first_name)}</p></div>
+            <Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={openPicker}>{t.chooseMember.someoneElse}</Button>
+          </> : <>
+            <Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={() => void save(true)}>{busy ? t.taskCreate.saving : t.taskCreate.assign}</Button>
+            <Button type="button" className="family-pill family-action-button" disabled={blocked} onClick={openPicker}>
+              <AssignmentIcon kind="sparkles" />{t.chooseMember.find}
+            </Button>
+          </>}
+        </div>
+      </section>
       {saveError && <p role="alert" className="text-error">{t.taskCreate.saveError}</p>}
       <Button type="submit" variant="secondary" className="family-pill" disabled={blocked}>{busy ? t.taskCreate.saving : t.taskCreate.save}</Button>
     </form>

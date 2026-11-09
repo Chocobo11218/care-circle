@@ -19,6 +19,7 @@ import FamilyTasks from './pages/family/FamilyTasks'
 import FamilyMembers from './pages/family/FamilyMembers'
 import FamilyAddMember from './pages/family/FamilyAddMember'
 import CreateTask from './pages/family/CreateTask'
+import ChooseFamilyMemberRoute from './pages/family/ChooseFamilyMemberRoute'
 import TaskDetails from './pages/family/TaskDetails'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
@@ -41,6 +42,8 @@ export default function App() {
       <Route path="add-member" element={<FamilyAddMember />} />
       <Route path="tasks/new" element={<CreateTask />} />
       <Route path="tasks/:id" element={<TaskDetails />} />
+      <Route path="tasks/new/choose-member" element={<ChooseFamilyMemberRoute key="draft" />} />
+      <Route path="tasks/:id/choose-member" element={<ChooseFamilyMemberRoute key="saved" />} />
     </Route>
     <Route path="/family/home" element={<Navigate to="/family" replace />} />
     <Route path="/elderly/home" element={<OnboardingGuard step="membership"><ElderlyHome /></OnboardingGuard>} />

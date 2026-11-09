@@ -25,11 +25,11 @@ test('requires a current real elder when elders exist; stale ids do not validate
   assert.deepEqual(tasks.validateTaskDraft(draft,['elder-a'],'elder-a',now),{})
 })
 test('task payload uses member ids and null optional values, with no status column', () => {
-  const unassigned=tasks.taskInsert({...draft,title:'  Appointment  '},'circle-a','member-a',null,false)
+  const unassigned=tasks.taskInsert({...draft,title:'  Appointment  '},'circle-a','member-a',null,null)
   assert.equal(unassigned.created_by,'member-a');assert.equal(unassigned.assignee_id,null);assert.equal(unassigned.elder_id,null)
   for(const key of ['location','start_time','end_time','description','note'])assert.equal(unassigned[key],null)
   assert.equal(unassigned.title,'Appointment');assert.equal('status' in unassigned,false)
-  const self=tasks.taskInsert(draft,'circle-a','member-a','elder-a',true)
+  const self=tasks.taskInsert(draft,'circle-a','member-a','elder-a','member-a')
   assert.equal(self.assignee_id,'member-a');assert.equal(self.elder_id,'elder-a')
 })
 test('sorts dates then times, with missing dates and times last, without mutation', () => {

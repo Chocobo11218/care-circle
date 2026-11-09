@@ -31,3 +31,11 @@ export function mergeMemberChange(members: Member[], change: MemberChange, circl
   if (existing) return members.map(member => member.id === id ? { ...member, ...change.new } : member)
   return [...members, change.new as Member]
 }
+
+const matchOrder = { best: 0, good: 1, alternative: 2 }
+
+export function assignmentCandidates(members: Member[], myId: string | undefined) {
+  const mocks = members.filter(member => member.is_mock && member.role === 'family' && member.id !== myId)
+  mocks.sort((a, b) => (a.match_label ? matchOrder[a.match_label] : 3) - (b.match_label ? matchOrder[b.match_label] : 3))
+  return [...mocks, ...members.filter(member => !member.is_mock && member.role === 'family' && member.id !== myId)]
+}
