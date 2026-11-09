@@ -12,9 +12,10 @@ export default function CareRecipientOptions({ members, selected, onChange, erro
   disabled: boolean
 }) {
   const [expanded, setExpanded] = useState(false)
+  const elders = members.filter(member => member.role === 'elderly')
   const others = members.filter(member => member.role !== 'elderly')
-  const showOthers = expanded || !members.some(member => member.role === 'elderly')
-  const visible = members.filter(member => member.role === 'elderly' || showOthers || selected.includes(member.id))
+  const showOthers = expanded || elders.length === 0
+  const visible = [...elders, ...others.filter(member => showOthers || selected.includes(member.id))]
 
   return <fieldset className="task-elder-options" aria-label={t.taskCreate.who}
     aria-invalid={!!error} aria-describedby={error ? 'task-elder-error' : undefined} tabIndex={-1}>
