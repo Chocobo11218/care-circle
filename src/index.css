@@ -188,3 +188,8 @@ button:not(:disabled), a { cursor: pointer; }
 .assignment-sheet { position: fixed; inset: auto 0 0; margin: 0 auto; width: min(100%, 28rem); max-width: 100%; border-radius: 1rem 1rem 0 0; background: var(--color-surface); color: var(--color-ink); padding: 1.25rem 1.25rem calc(1.25rem + env(safe-area-inset-bottom, 0px)); }
 .assignment-sheet::backdrop { background: rgb(0 0 0 / 40%); }
 .assignment-sheet form { margin-top: 1rem; }
+.assignment-others > summary { min-height: 3.5rem; align-content: center; color: var(--color-btn-primary); cursor: pointer; }
+.assignment-other-list { display: grid; gap: .75rem; }
+.assignment-other-list h3 { font-weight: 600; }
+.assignment-other-row { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(7.5rem, auto); align-items: center; gap: .5rem; }
+.assignment-other-row button { padding-inline: .75rem; }

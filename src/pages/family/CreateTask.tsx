@@ -13,7 +13,7 @@ import { useCreateTask } from '../../hooks/useCreateTask'
 import AssignmentIcon from '../../components/tasks/AssignmentIcon'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useLocalClock } from '../../hooks/useLocalClock'
-import { assignmentCandidates, splitMembers } from '../../lib/members'
+import { splitMembers } from '../../lib/members'
 import { localISODate } from '../../lib/date'
 import { validateTaskDraft, type TaskErrors } from '../../lib/tasks'
 import { t } from '../../i18n/en'
@@ -32,7 +32,7 @@ export default function CreateTask() {
   const selectedElderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
   const elderError = elders.length > 0 && !selectedElderId ? errors.elderId : undefined
   const blocked = loading || (memberError && !members.length) || busy
-  const chosen = assignmentCandidates(members, me?.id).find(member => member.id === draft.assigneeId)
+  const chosen = me?.id === draft.assigneeId ? me : members.find(member => member.role === 'family' && member.id === draft.assigneeId)
 
   function validate() {
     if (blocked || !me) return false
@@ -49,14 +49,14 @@ export default function CreateTask() {
     navigate('/family/tasks/new/choose-member', { state: { from: '/family/tasks/new' } })
   }
 
-  async function save(selfAssign: boolean) {
+  async function save() {
     if (!validate() || !me) return
-    const task = await create(draft, selectedElderId, selfAssign ? me.id : chosen?.id ?? null)
+    const task = await create(draft, selectedElderId, chosen?.id ?? null)
     if (!task) return
     clear()
     navigate(task.assignee_id ? `/family/tasks/${task.id}` : '/family/tasks', { replace: true })
   }
-  function submit(event: FormEvent) { event.preventDefault(); void save(false) }
+  function submit(event: FormEvent) { event.preventDefault(); void save() }
   return <>
     <TopBar title={t.taskCreate.title} />
     <form ref={formRef} className="task-create-form" noValidate onSubmit={submit}>
@@ -86,7 +86,7 @@ export default function CreateTask() {
             <div className="task-assignee"><Avatar name={chosen.first_name} small /><p>{t.taskList.assigned(chosen.first_name)}</p></div>
             <Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={openPicker}>{t.chooseMember.someoneElse}</Button>
           </> : <>
-            <Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={() => void save(true)}>{busy ? t.taskCreate.saving : t.taskCreate.assign}</Button>
+            <Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={() => { if (me) update({ assigneeId: me.id }) }}>{t.taskCreate.assign}</Button>
             <Button type="button" className="family-pill family-action-button" disabled={blocked} onClick={openPicker}>
               <AssignmentIcon kind="sparkles" />{t.chooseMember.find}
             </Button>

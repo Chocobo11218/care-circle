@@ -7,6 +7,8 @@ export const en = {
     distance: (km: number) => `${km} km away`, why: 'Why this match?',
     select: 'Select', selected: 'Selected', selectedMembers: 'Selected family members',
     selectName: (name: string) => `Select ${name}`, selectedName: (name: string) => `Selected ${name}`,
+    confirm: 'Confirm', chooseOther: 'Choose other member', otherMembers: 'Other family members',
+    you: (name: string) => `${name} (You)`,
     send: 'Send request', sending: 'Sending…', someoneElse: 'Choose someone else',
     find: 'Find the most suitable family member', empty: 'No family members are available to select.',
     suggested: 'Suggested', or: 'or', request: (name: string) => `Request ${name}`,
