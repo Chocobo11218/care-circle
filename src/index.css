@@ -193,3 +193,11 @@ button:not(:disabled), a { cursor: pointer; }
 .assignment-other-list h3 { font-weight: 600; }
 .assignment-other-row { display: grid; grid-template-columns: auto minmax(0, 1fr) minmax(7.5rem, auto); align-items: center; gap: .5rem; }
 .assignment-other-row button { padding-inline: .75rem; }
+
+.task-elder-gap { background: var(--color-support-2); }
+.task-pill-link, .task-joined-banner { display: flex; align-items: center; gap: .65rem; min-height: 3.5rem; padding: .5rem 1rem; }
+.task-pill-link { justify-content: center; border-radius: 999px; border: 1px solid var(--color-stroke); background: var(--color-surface); }
+.task-pill-link + .task-assignment, .task-pill-link + .task-assignee, .task-detail-card > .task-pill-link { margin-top: 1rem; }
+.task-joined-banner { justify-content: space-between; margin-top: 1rem; border-radius: 1rem; background: var(--color-support-1); color: var(--color-btn-primary); overflow-wrap: anywhere; }
+.task-edit-action { display: flex; justify-content: flex-end; position: sticky; bottom: 1rem; margin-top: auto; padding-top: 1.5rem; }
+.task-edit-action a { box-shadow: var(--shadow-card); }

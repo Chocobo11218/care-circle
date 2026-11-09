@@ -13,7 +13,7 @@ export default function TaskFacts({ task, now, creator = false, hideEmpty = fals
   const creatorName = members.find(member => member.id === task.created_by)?.first_name
     ?? (me?.id === task.created_by ? me.first_name : t.taskList.familyMember)
   return <>
-    {task.elder_id && <div className="task-elder-pill"><Avatar name={elder?.first_name ?? t.taskList.olderAdult} small /><span>{elder?.first_name ?? t.taskList.olderAdult}</span></div>}
+    {task.elder_id ? <div className="task-elder-pill"><Avatar name={elder?.first_name ?? t.taskList.olderAdult} small /><span>{elder?.first_name ?? t.taskList.olderAdult}</span></div> : !hideEmpty && <div className="task-elder-pill task-elder-gap">{t.taskList.needsElder}</div>}
     {(!hideEmpty || task.task_date || task.start_time || task.end_time || task.location || creator) && <div className="task-facts">
       {(!hideEmpty || task.task_date || task.start_time || task.end_time) && <p><TaskIcon kind="calendar" /><span>{formatTaskRow(task, now)}</span></p>}
       {task.location && <p><TaskIcon kind="location" /><span>{task.location}</span></p>}

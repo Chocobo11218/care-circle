@@ -20,6 +20,7 @@ import FamilyMembers from './pages/family/FamilyMembers'
 import FamilyAddMember from './pages/family/FamilyAddMember'
 import CreateTask from './pages/family/CreateTask'
 import ChooseFamilyMemberRoute from './pages/family/ChooseFamilyMemberRoute'
+import ChooseOlderAdult from './pages/family/ChooseOlderAdult'
 import TaskDetails from './pages/family/TaskDetails'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
@@ -42,6 +43,7 @@ export default function App() {
       <Route path="add-member" element={<FamilyAddMember />} />
       <Route path="tasks/new" element={<CreateTask />} />
       <Route path="tasks/:id" element={<TaskDetails />} />
+      <Route path="tasks/:id/choose-elder" element={<ChooseOlderAdult />} />
       <Route path="tasks/new/choose-member" element={<ChooseFamilyMemberRoute key="draft" />} />
       <Route path="tasks/:id/choose-member" element={<ChooseFamilyMemberRoute key="saved" />} />
     </Route>

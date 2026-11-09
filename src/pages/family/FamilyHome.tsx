@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import Avatar from '../../components/family/Avatar'
 import PlusIcon from '../../components/family/PlusIcon'
@@ -25,6 +25,10 @@ export default function FamilyHome() {
   useScreenEvent('/family')
   if (!me) return null
   const { realElders, realFamily } = splitMembers(members)
+  const latestElder = realElders.reduce<typeof realElders[number] | undefined>((latest, elder) =>
+    !latest || Date.parse(elder.joined_at) > Date.parse(latest.joined_at) ? elder : latest, undefined)
+  const firstUnlinked = taskFeed.tasks.reduce<typeof taskFeed.tasks[number] | undefined>((first, task) =>
+    task.elder_id === null && (!first || Date.parse(task.created_at) < Date.parse(first.created_at)) ? task : first, undefined)
   const hasOthers = [...realElders, ...realFamily].some(member => member.id !== me.id)
   return <>
     <header className="family-home-header">
@@ -39,6 +43,9 @@ export default function FamilyHome() {
         <div className="family-avatar-stack">{realElders.map(member => <Avatar key={member.id} name={member.first_name} />)}</div>
         <div className="min-w-0"><h2>{t.familyHome.atHome(realElders.map(member => member.first_name))}</h2><p>{t.familyHome.noJourney}</p></div>
       </section>}
+      {latestElder && firstUnlinked && <Link className="task-joined-banner" to={`/family/tasks/${firstUnlinked.id}/choose-elder`} state={{ fromHome: true }}>
+        <span>{t.chooseElder.joined(latestElder.first_name)}</span><span aria-hidden="true">›</span>
+      </Link>}
       <TaskFeedStatus />
       {!taskFeed.loading && !taskFeed.error && (taskFeed.tasks.length ? <TaskSections /> : <ActivityEmptyState />)}
       {!taskFeed.loading && taskFeed.tasks.length > 0 && <Button className="family-pill family-action-button mt-5" onClick={() => navigate('/family/tasks/new')}><PlusIcon />{t.familyTasks.add}</Button>}

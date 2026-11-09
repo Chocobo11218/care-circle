@@ -4,7 +4,7 @@ import { localISODate, parseTaskDate } from './date'
 import { t } from '../i18n/en'
 
 export interface TaskChange { eventType: 'INSERT' | 'UPDATE' | 'DELETE'; new: Partial<Task>; old: Partial<Task> }
-export function needsAttention(task: Task) { return task.assignee_id === null }
+export function needsAttention(task: Task) { return task.assignee_id === null || task.elder_id === null }
 export function sortTasks(tasks: Task[]): Task[] {
   return [...tasks].sort((a, b) => {
     if (a.task_date !== b.task_date) return a.task_date === null ? 1 : b.task_date === null ? -1 : a.task_date.localeCompare(b.task_date)
@@ -32,9 +32,25 @@ export function validateTaskDraft(draft: TaskDraft, elderIds: string[], selected
   if (draft.startTime && draft.endTime && draft.endTime <= draft.startTime) errors.endTime = t.taskCreate.endInvalid
   return errors
 }
-export function taskInsert(draft: TaskDraft, circleId: string, memberId: string, elderId: string | null, assigneeId: string | null) {
-  return { circle_id: circleId, created_by: memberId, elder_id: elderId, assignee_id: assigneeId,
-    title: draft.title.trim(), location: draft.location.trim() || null, task_date: draft.date,
-    start_time: draft.startTime || null, end_time: draft.endTime || null,
+export function tasksForElder(tasks: Task[], elderMemberId: string) {
+  return tasks.filter(task => task.elder_id === elderMemberId)
+}
+
+export function taskFields(draft: TaskDraft, elderId: string | null) {
+  return { elder_id: elderId, title: draft.title.trim(), location: draft.location.trim() || null,
+    task_date: draft.date, start_time: draft.startTime || null, end_time: draft.endTime || null,
     description: draft.description.trim() || null, note: draft.note.trim() || null }
+}
+
+export function taskInsert(draft: TaskDraft, circleId: string, memberId: string, elderId: string | null, assigneeId: string | null) {
+  return { ...taskFields(draft, elderId), circle_id: circleId, created_by: memberId, assignee_id: assigneeId }
+}
+
+export function draftFromTask(task: Task): TaskDraft {
+  return {
+    elderId: task.elder_id, assigneeId: task.assignee_id, title: task.title,
+    location: task.location ?? '', date: task.task_date ?? '',
+    startTime: task.start_time?.slice(0, 5) ?? '', endTime: task.end_time?.slice(0, 5) ?? '',
+    description: task.description ?? '', note: task.note ?? '',
+  }
 }
