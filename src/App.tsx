@@ -13,6 +13,7 @@ import CreateCircle from './pages/onboarding/CreateCircle'
 import JoinCircle from './pages/onboarding/JoinCircle'
 import ShareInvite from './pages/onboarding/ShareInvite'
 import Permission from './pages/onboarding/Permission'
+import Profile from './pages/family/Profile'
 import FamilyHome from './pages/family/FamilyHome'
 import FamilyLayout from './components/family/FamilyLayout'
 import FamilyTasks from './pages/family/FamilyTasks'
@@ -40,6 +41,7 @@ export default function App() {
     <Route path="/permission" element={<OnboardingGuard step="membership"><Permission /></OnboardingGuard>} />
     <Route path="/family" element={<OnboardingGuard step="membership" role="family"><FamilyLayout /></OnboardingGuard>}>
       <Route index element={<FamilyHome />} />
+      <Route path="profile" element={<Profile />} />
       <Route path="tasks" element={<FamilyTasks />} />
       <Route path="members" element={<FamilyMembers />} />
       <Route path="add-member" element={<FamilyAddMember />} />

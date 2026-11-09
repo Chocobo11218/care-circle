@@ -17,3 +17,4 @@ export interface DraftValue {
 }
 
 export const DraftContext = createContext<DraftValue | null>(null)
+export const draftStorageKey = 'carecircle_draft'

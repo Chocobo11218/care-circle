@@ -39,6 +39,8 @@ export const en = {
     saveError: 'Unable to save your task. Please try again.' },
   taskDetails: { title: 'Task details', description: 'Task description', noDescription: 'No task description.', note: 'Note',
     missing: 'This task does not exist or has been deleted.', back: 'Back to Tasks' },
+  profile: { title: 'Profile', logOut: 'Log out', loggingOut: 'Logging out…',
+    error: 'Unable to log out. Please try again.' },
   familyNav: { home: 'Home', tasks: 'Tasks', family: 'Family', label: 'Family navigation' },
   familyCommon: { loading: 'Loading members…', error: 'Unable to load your family. Please try again.',
     retry: 'Try again', unknownInitial: '?', avatar: (name: string) => `${name}’s avatar` },

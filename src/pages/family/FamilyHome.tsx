@@ -34,7 +34,9 @@ export default function FamilyHome() {
   return <>
     <header className="family-home-header">
       <div className="min-w-0"><p>{localDate(now)}</p><h1>{localGreeting(me.first_name, now)}</h1></div>
-      <Avatar name={me.first_name} small />
+      <Link to="/family/profile" className="flex min-h-14 min-w-14 items-center justify-center rounded-full" aria-label={t.profile.title}>
+        <Avatar name={me.first_name} small />
+      </Link>
     </header>
     <MemberFeedStatus loading={loading} error={error && !members.length} retry={refetch} />
     {!loading && taskFeed.loading && <TaskFeedStatus />}
