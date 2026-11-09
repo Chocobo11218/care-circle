@@ -25,11 +25,12 @@ export default function TaskDetails() {
     {!loading && !error && !task && <div className="family-feed-status"><p role="status">{t.taskDetails.missing}</p><Link className="task-invite-link" to="/family/tasks">{t.taskDetails.back}</Link></div>}
     {!loading && !members.loading && task && <><article className="task-detail-card">
       <h2>{task.title}</h2><div className="task-divider" />
-      <TaskFacts task={task} now={now} creator />
+      <TaskFacts task={task} now={now} creator elderAction={
+        <Link className="task-pill-link" to={`/family/tasks/${task.id}/choose-elder`} state={{ fromDetails: true }}>{t.chooseElder.title}</Link>
+      } />
       <div className="task-divider" />
       <section className="task-description-block"><h3>{t.taskDetails.description}</h3><p>{task.description || t.taskDetails.noDescription}</p></section>
       {task.note && <section className="task-note-box"><h3>{t.taskDetails.note}</h3><p>{task.note}</p></section>}
-      {task.elder_id === null && <Link className="task-pill-link" to={`/family/tasks/${task.id}/choose-elder`} state={{ fromDetails: true }}>{t.chooseElder.title}</Link>}
       <TaskAssignment task={task} />
     </article>
     <div className="task-edit-action"><Link className="task-pill-link" to={`/family/tasks/${task.id}/edit`} state={{ fromDetails: true }}><TaskIcon kind="edit" />{t.taskEdit.title}</Link></div></>}

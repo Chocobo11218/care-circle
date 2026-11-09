@@ -9,6 +9,7 @@ import { useFamilyTasks } from '../../hooks/useFamilyTasks'
 import { useFamilyMembers } from '../../hooks/useFamilyMembers'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useUpdateTask } from '../../hooks/useUpdateTask'
+import { careRecipientIds } from '../../lib/tasks'
 import { splitMembers } from '../../lib/members'
 import { t } from '../../i18n/en'
 
@@ -23,7 +24,8 @@ export default function ChooseOlderAdult() {
   useScreenEvent('choose_older_adult')
   const task = tasks.tasks.find(item => item.id === id)
   const elders = splitMembers(members.members).realElders
-  const canSave = task?.elder_id === null && elders.some(elder => elder.id === selected)
+  const needsRecipient = !!task && careRecipientIds(task).length === 0
+  const canSave = needsRecipient && elders.some(elder => elder.id === selected)
   const destination = state?.fromHome ? '/family' : `/family/tasks/${id}`
 
   function back() {
@@ -34,7 +36,7 @@ export default function ChooseOlderAdult() {
   async function save(event: FormEvent) {
     event.preventDefault()
     if (!canSave || !task || !selected || busy) return
-    if (await updateTask(task, { elder_id: selected })) back()
+    if (await updateTask(task, { elder_id: selected, care_recipient_ids: [selected] })) back()
   }
 
   return <>
@@ -42,8 +44,8 @@ export default function ChooseOlderAdult() {
     <TaskFeedStatus />
     <MemberFeedStatus loading={members.loading} error={members.error && !members.members.length} retry={members.refetch} />
     {!tasks.loading && !tasks.error && !task && <p role="status">{t.taskDetails.missing}</p>}
-    {task && task.elder_id !== null && <Link className="task-pill-link" to={destination} replace>{t.chooseElder.alreadyLinked}</Link>}
-    {task?.elder_id === null && !members.loading && !(members.error && !members.members.length) &&
+    {task && !needsRecipient && <Link className="task-pill-link" to={destination} replace>{t.chooseElder.alreadyLinked}</Link>}
+    {needsRecipient && !members.loading && !(members.error && !members.members.length) &&
       <form className="form-stack" onSubmit={save}>
         <h2>{t.chooseElder.question}</h2>
         {elders.length ? <>

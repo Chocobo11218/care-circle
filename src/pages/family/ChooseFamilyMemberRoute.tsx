@@ -11,7 +11,7 @@ import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { useTaskDraft } from '../../hooks/useTaskDraft'
 import { assignmentCandidates, splitMembers } from '../../lib/members'
-import { taskInsert } from '../../lib/tasks'
+import { selectedCareRecipients, taskInsert } from '../../lib/tasks'
 import { t } from '../../i18n/en'
 
 export default function ChooseFamilyMemberRoute() {
@@ -35,9 +35,10 @@ export default function ChooseFamilyMemberRoute() {
   const candidates = assignmentCandidates(me && !members.some(member => member.id === me.id) ? [...members, me] : members)
   const selected = candidates.find(member => member.id === (id ? selection : draft.assigneeId))
   const elders = splitMembers(memberFeed.members).realElders
-  const elderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
+  const recipientIds = selectedCareRecipients(draft, members, elders)
+  const elderId = recipientIds.find(id => members.some(member => member.id === id && member.role === 'elderly')) ?? null
   const task = id ? taskFeed.tasks.find(task => task.id === id)
-    : me && circle ? { ...taskInsert(draft, circle.id, me.id, elderId, null), id: '', created_at: '' } : undefined
+    : me && circle ? { ...taskInsert({ ...draft, recipientIds }, circle.id, me.id, elderId, null), id: '', created_at: '' } : undefined
   const busy = assignment.busy
   if (!id && (!draft.title.trim() || !draft.date)) return <Navigate to={fallback} replace />
   if (memberFeed.loading || (memberFeed.error && !memberFeed.members.length) || (id && (taskFeed.loading || (taskFeed.error && !task)))) {

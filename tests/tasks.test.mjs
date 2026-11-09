@@ -4,25 +4,27 @@ import { loadTypeScript } from './load-typescript.mjs'
 const tasks = await loadTypeScript(new URL('../src/lib/tasks.ts', import.meta.url))
 const dates = await loadTypeScript(new URL('../src/lib/date.ts', import.meta.url))
 const now = new Date(2026, 9, 14, 23, 50)
-const draft = { elderId: null, title: 'Appointment', date: '2026-10-14', location: '', startTime: '', endTime: '', description: '', note: '' }
+const draft = { recipientIds: null, title: 'Appointment', date: '2026-10-14', location: '', startTime: '', endTime: '', description: '', note: '' }
 const task = (id, date = '2026-10-14', start = null, assignee = null, elder = null) => ({ id, circle_id:'circle-a', title:id, task_date:date, start_time:start, end_time:null, assignee_id:assignee, elder_id:elder, created_by:'member-a', location:null, description:null, note:null, created_at:'2026-10-14T00:00:00Z' })
 
 test('date is required even without an elder; name and date suffice with no elder', () => {
-  assert.deepEqual(tasks.validateTaskDraft(draft, [], null, now), {})
-  assert.ok(tasks.validateTaskDraft({ ...draft, date:'' }, [], null, now).date)
-  assert.ok(tasks.validateTaskDraft({ ...draft, title:' ' }, [], null, now).title)
+  assert.deepEqual(tasks.validateTaskDraft(draft, false, [], now), {})
+  assert.ok(tasks.validateTaskDraft({ ...draft, date:'' }, false, [], now).date)
+  assert.ok(tasks.validateTaskDraft({ ...draft, title:' ' }, false, [], now).title)
 })
 test('past and impossible dates, equal and reversed times block both save modes', () => {
-  for (const date of ['2026-10-13','2026-02-30','not-a-date']) assert.ok(tasks.validateTaskDraft({ ...draft, date }, [], null, now).date)
-  for (const [startTime,endTime] of [['10:00','10:00'],['14:00','10:00']]) assert.ok(tasks.validateTaskDraft({ ...draft,startTime,endTime }, [], null, now).endTime)
-  assert.deepEqual(tasks.validateTaskDraft({ ...draft,startTime:'10:00',endTime:'14:00' }, [], null, now),{})
-  assert.deepEqual(tasks.validateTaskDraft({ ...draft,startTime:'10:00' }, [], null, now),{})
-  assert.deepEqual(tasks.validateTaskDraft({ ...draft,endTime:'14:00' }, [], null, now),{})
+  for (const date of ['2026-10-13','2026-02-30','not-a-date']) assert.ok(tasks.validateTaskDraft({ ...draft, date }, false, [], now).date)
+  for (const [startTime,endTime] of [['10:00','10:00'],['14:00','10:00']]) assert.ok(tasks.validateTaskDraft({ ...draft,startTime,endTime }, false, [], now).endTime)
+  assert.deepEqual(tasks.validateTaskDraft({ ...draft,startTime:'10:00',endTime:'14:00' }, false, [], now),{})
+  assert.deepEqual(tasks.validateTaskDraft({ ...draft,startTime:'10:00' }, false, [], now),{})
+  assert.deepEqual(tasks.validateTaskDraft({ ...draft,endTime:'14:00' }, false, [], now),{})
 })
-test('requires a current real elder when elders exist; stale ids do not validate', () => {
-  assert.ok(tasks.validateTaskDraft(draft,['elder-a'],null,now).elderId)
-  assert.ok(tasks.validateTaskDraft(draft,['elder-a'],'deleted-id',now).elderId)
-  assert.deepEqual(tasks.validateTaskDraft(draft,['elder-a'],'elder-a',now),{})
+test('requires a recipient when real elders exist and accepts a non-elder', () => {
+  assert.ok(tasks.validateTaskDraft(draft, true, [], now).elderId)
+  const members = [{ id: 'family-a' }, { id: 'elder-a' }]
+  const recipients = tasks.selectedCareRecipients({ ...draft, recipientIds: ['family-a', 'deleted-id'] }, members, [members[1]])
+  assert.deepEqual(recipients, ['family-a'])
+  assert.deepEqual(tasks.validateTaskDraft(draft, true, recipients, now), {})
 })
 test('task payload uses member ids and null optional values, with no status column', () => {
   const unassigned=tasks.taskInsert({...draft,title:'  Appointment  '},'circle-a','member-a',null,null)
@@ -82,4 +84,12 @@ test('a task enters the elder task feed once linked to that elder', () => {
   const changed = tasks.mergeTaskChange([pending], { eventType: 'UPDATE', new: linked, old: {} }, 'circle-a')
   assert.deepEqual(tasks.tasksForElder(changed, 'elder-a'), [linked])
   assert.deepEqual(tasks.tasksForElder(changed, 'elder-b'), [])
+})
+
+test('multiple recipients round-trip through a task and are each matched by the recipient filter', () => {
+  const recipientIds = ['elder-a', 'family-a', 'elder-b']
+  const row = { ...task('shared'), ...tasks.taskInsert({ ...draft, recipientIds }, 'circle-a', 'family-a', 'elder-a', null) }
+  assert.deepEqual(tasks.draftFromTask(row).recipientIds, recipientIds)
+  for (const id of recipientIds) assert.deepEqual(tasks.tasksForElder([row], id), [row])
+  assert.deepEqual(tasks.tasksForElder([row], 'other'), [])
 })

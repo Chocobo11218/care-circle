@@ -28,6 +28,7 @@ export interface Task {
   id: string
   circle_id: string
   elder_id: string | null
+  care_recipient_ids?: string[] | null
   created_by: string
   assignee_id: string | null
   title: string

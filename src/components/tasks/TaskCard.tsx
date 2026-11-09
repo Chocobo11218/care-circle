@@ -14,7 +14,6 @@ export default function TaskCard({ task, now }: { task: Task; now: Date }) {
       <div className="task-divider" />
       <TaskFacts task={task} now={now} />
     </Link>
-    <div className="task-card-action">{task.elder_id === null && <Link className="task-pill-link" to={`/family/tasks/${task.id}/choose-elder`}>{t.chooseElder.title}</Link>}
-      <TaskAssignment task={task} /></div>
+    <div className="task-card-action"><TaskAssignment task={task} /></div>
   </article>
 }

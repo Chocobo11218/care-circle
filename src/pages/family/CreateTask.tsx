@@ -4,7 +4,7 @@ import Button from '../../components/Button'
 import Input from '../../components/Input'
 import TopBar from '../../components/TopBar'
 import Avatar from '../../components/family/Avatar'
-import ElderOptions from '../../components/tasks/ElderOptions'
+import CareRecipientOptions from '../../components/tasks/CareRecipientOptions'
 import MemberFeedStatus from '../../components/family/MemberFeedStatus'
 import TaskIcon from '../../components/tasks/TaskIcon'
 import { useSession } from '../../hooks/useSession'
@@ -17,7 +17,7 @@ import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { splitMembers } from '../../lib/members'
 import { localISODate } from '../../lib/date'
-import { taskFields, validateTaskDraft, type TaskErrors } from '../../lib/tasks'
+import { careRecipientIds, selectedCareRecipients, taskFields, validateTaskDraft, type TaskErrors } from '../../lib/tasks'
 import type { Task } from '../../types'
 import { t } from '../../i18n/en'
 
@@ -37,15 +37,16 @@ export default function CreateTask({ editing }: { editing?: Task }) {
   const formRef = useRef<HTMLFormElement>(null)
   useScreenEvent(editing ? 'edit_task' : 'create_task')
   const elders = splitMembers(members).realElders
-  const selectedElderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
-  const elderError = elders.length > 0 && !selectedElderId ? errors.elderId : undefined
+  const recipientIds = selectedCareRecipients(draft, members, elders)
+  const elderId = recipientIds.find(id => members.some(member => member.id === id && member.role === 'elderly')) ?? null
+  const elderError = errors.elderId
   const blocked = loading || (memberError && !members.length) || busy
   const assigneeId = editing ? editing.assignee_id : draft.assigneeId
   const chosen = me?.id === assigneeId ? me : members.find(member => member.role === 'family' && member.id === assigneeId)
 
   function validate() {
     if (blocked || !me) return false
-    const nextErrors = validateTaskDraft(draft, elders.map(elder => elder.id), selectedElderId)
+    const nextErrors = validateTaskDraft(draft, elders.length > 0, recipientIds)
     setErrors(nextErrors)
     if (!Object.keys(nextErrors).length) return true
     requestAnimationFrame(() => formRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus())
@@ -54,7 +55,7 @@ export default function CreateTask({ editing }: { editing?: Task }) {
 
   function openPicker() {
     if (!validate()) return
-    update({ elderId: selectedElderId })
+    update({ recipientIds })
     navigate('/family/tasks/new/choose-member', { state: { from: '/family/tasks/new' } })
   }
 
@@ -66,13 +67,15 @@ export default function CreateTask({ editing }: { editing?: Task }) {
   async function save() {
     if (!validate() || !me) return
     if (editing) {
-      const { elder_id, ...fields } = taskFields(draft, selectedElderId)
-      if (await edit.updateTask(editing, elder_id && elder_id !== editing.elder_id ? { ...fields, elder_id } : fields)) {
+      const { elder_id, care_recipient_ids, ...fields } = taskFields({ ...draft, recipientIds }, elderId)
+      const existing = careRecipientIds(editing)
+      const changed = existing.length !== recipientIds.length || recipientIds.some(id => !existing.includes(id))
+      if (await edit.updateTask(editing, changed ? { ...fields, elder_id, care_recipient_ids } : fields)) {
         backToDetails()
       }
       return
     }
-    const task = await creation.create(draft, selectedElderId, chosen?.id ?? null)
+    const task = await creation.create({ ...draft, recipientIds }, elderId, chosen?.id ?? null)
     if (!task) return
     clear()
     navigate(task.assignee_id ? `/family/tasks/${task.id}` : '/family/tasks', { replace: true })
@@ -84,8 +87,8 @@ export default function CreateTask({ editing }: { editing?: Task }) {
     <form ref={formRef} className="task-create-form" noValidate onSubmit={submit}>
       <section><h2>{t.taskCreate.who}</h2>
         <MemberFeedStatus loading={loading} error={memberError && !members.length} retry={refetch} />
-        {!loading && !(memberError && !members.length) && (elders.length ? <ElderOptions elders={elders} selected={selectedElderId} onSelect={elderId => update({ elderId })}
-          label={t.taskCreate.who} error={elderError} disabled={busy} /> : <><Input label={t.taskCreate.who} value={t.taskCreate.noElder} disabled /><Link className="task-invite-link" to="/family/add-member">{t.taskCreate.invite}</Link></>)}
+        {!loading && !(memberError && !members.length) && (members.length ? <CareRecipientOptions members={members} selected={recipientIds} onChange={recipientIds => update({ recipientIds })}
+          error={elderError} disabled={busy} /> : <><Input label={t.taskCreate.who} value={t.taskCreate.noElder} disabled /><Link className="task-invite-link" to="/family/add-member">{t.taskCreate.invite}</Link></>)}
         {elderError && <p role="alert" id="task-elder-error" className="task-field-error">{elderError}</p>}
       </section>
       <section className="form-stack"><h2>{t.taskCreate.details}</h2>

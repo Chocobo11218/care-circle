@@ -12,6 +12,7 @@ import { useFamilyMembers } from '../../hooks/useFamilyMembers'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { localDate, localGreeting } from '../../lib/family'
+import { careRecipientIds } from '../../lib/tasks'
 import { splitMembers } from '../../lib/members'
 import { t } from '../../i18n/en'
 import familyIllustration from '../../assets/family-hug.svg'
@@ -28,7 +29,7 @@ export default function FamilyHome() {
   const latestElder = realElders.reduce<typeof realElders[number] | undefined>((latest, elder) =>
     !latest || Date.parse(elder.joined_at) > Date.parse(latest.joined_at) ? elder : latest, undefined)
   const firstUnlinked = taskFeed.tasks.reduce<typeof taskFeed.tasks[number] | undefined>((first, task) =>
-    task.elder_id === null && (!first || Date.parse(task.created_at) < Date.parse(first.created_at)) ? task : first, undefined)
+    careRecipientIds(task).length === 0 && (!first || Date.parse(task.created_at) < Date.parse(first.created_at)) ? task : first, undefined)
   const hasOthers = [...realElders, ...realFamily].some(member => member.id !== me.id)
   return <>
     <header className="family-home-header">

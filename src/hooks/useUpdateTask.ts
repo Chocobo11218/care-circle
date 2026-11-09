@@ -4,7 +4,7 @@ import { useSession } from './useSession'
 import { useFamilyTasks } from './useFamilyTasks'
 import type { Task } from '../types'
 
-type Fields = Partial<Pick<Task, 'title' | 'location' | 'task_date' | 'start_time' | 'end_time' | 'description' | 'note' | 'elder_id'>>
+type Fields = Partial<Pick<Task, 'title' | 'location' | 'task_date' | 'start_time' | 'end_time' | 'description' | 'note' | 'elder_id' | 'care_recipient_ids'>>
 
 export function useUpdateTask() {
   const { me, circle } = useSession()
@@ -22,6 +22,11 @@ export function useUpdateTask() {
       let query = supabase.from('tasks').update(fields).eq('id', task.id).eq('circle_id', circle.id)
       if ('elder_id' in fields) {
         query = task.elder_id === null ? query.is('elder_id', null) : query.eq('elder_id', task.elder_id)
+      }
+      if ('care_recipient_ids' in fields) {
+        query = task.care_recipient_ids == null
+          ? query.is('care_recipient_ids', null)
+          : query.eq('care_recipient_ids', `{${task.care_recipient_ids.join(',')}}`)
       }
       const { data, error } = await query.select('*').maybeSingle()
       if (error || !data) throw error ?? new Error('Task update returned no row')
