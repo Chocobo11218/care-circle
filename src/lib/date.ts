@@ -72,3 +72,19 @@ export function formatJoinedTime(value: string): string | null {
   const date = new Date(value)
   return Number.isNaN(date.getTime()) ? null : new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)
 }
+
+export function formatElderTaskDate(value: string | null): string {
+  const date = value ? parseTaskDate(value) : null
+  if (!date) return t.elderly.unavailable
+  return new Intl.DateTimeFormat(USE_BUDDHIST_YEAR ? 'en-GB-u-ca-buddhist' : 'en-GB', {
+    day: 'numeric', month: 'long', year: 'numeric',
+  }).format(date)
+}
+
+export function formatTaskTime(startTime: string | null, endTime: string | null): string {
+  const start = startTime?.slice(0, 5)
+  const end = endTime?.slice(0, 5)
+  return start && end ? t.taskDates.range(start, end)
+    : start ? t.taskDates.startsAt(start)
+    : end ? t.taskDates.endsAt(end) : t.elderly.unavailable
+}
