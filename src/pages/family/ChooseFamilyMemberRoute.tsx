@@ -11,7 +11,7 @@ import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { useTaskDraft } from '../../hooks/useTaskDraft'
 import { assignmentCandidates, splitMembers } from '../../lib/members'
-import { taskInsert } from '../../lib/tasks'
+import { selectedCareRecipients, taskInsert } from '../../lib/tasks'
 import { t } from '../../i18n/en'
 
 export default function ChooseFamilyMemberRoute() {
@@ -25,6 +25,7 @@ export default function ChooseFamilyMemberRoute() {
   const assignment = useAssignTask()
   const [selection, setSelection] = useState<string | null>(null)
   useScreenEvent('choose_member')
+  const canReassign = !!id && state && 'expectedAssignee' in state && state.from === `/family/tasks/${id}/edit`
   const fallback = id ? `/family/tasks/${id}` : '/family/tasks/new'
   const back = () => {
     if (state?.from) navigate(-1)
@@ -34,9 +35,10 @@ export default function ChooseFamilyMemberRoute() {
   const candidates = assignmentCandidates(me && !members.some(member => member.id === me.id) ? [...members, me] : members)
   const selected = candidates.find(member => member.id === (id ? selection : draft.assigneeId))
   const elders = splitMembers(memberFeed.members).realElders
-  const elderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
+  const recipientIds = selectedCareRecipients(draft, members, elders)
+  const elderId = recipientIds.find(id => members.some(member => member.id === id && member.role === 'elderly')) ?? null
   const task = id ? taskFeed.tasks.find(task => task.id === id)
-    : me && circle ? { ...taskInsert(draft, circle.id, me.id, elderId, null), id: '', created_at: '' } : undefined
+    : me && circle ? { ...taskInsert({ ...draft, recipientIds }, circle.id, me.id, elderId, null), id: '', created_at: '' } : undefined
   const busy = assignment.busy
   if (!id && (!draft.title.trim() || !draft.date)) return <Navigate to={fallback} replace />
   if (memberFeed.loading || (memberFeed.error && !memberFeed.members.length) || (id && (taskFeed.loading || (taskFeed.error && !task)))) {
@@ -55,7 +57,7 @@ export default function ChooseFamilyMemberRoute() {
   async function send(memberId: string) {
     if (!task || busy || !candidates.some(member => member.id === memberId)) return
     if (id) {
-      if (await assignment.assign(task, memberId)) back()
+      if (await assignment.assign(task, memberId, canReassign ? state.expectedAssignee : null)) back()
       return
     }
     update({ assigneeId: memberId })
@@ -63,7 +65,7 @@ export default function ChooseFamilyMemberRoute() {
   }
 
   return <ChooseFamilyMemberPage task={task} candidates={candidates} selected={selected} busy={busy}
-    currentMemberId={me?.id} isDraft={!id} assigned={!!id && task.assignee_id !== null}
+    currentMemberId={me?.id} isDraft={!id} assigned={!!id && task.assignee_id !== (canReassign ? state.expectedAssignee : null)}
     error={assignment.error ? t.taskList.assignError : undefined}
     onSelect={id ? setSelection : assigneeId => update({ assigneeId })}
     onBack={() => { if (!busy) back() }} onSend={memberId => void send(memberId)} />

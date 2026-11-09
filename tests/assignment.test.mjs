@@ -83,3 +83,36 @@ test('Send request is disabled until a candidate is selected and while sending o
   assert.match(sendButton({ selected, assigned: true }), /\bdisabled=""/)
   assert.match(sendButton({ selected, busy: true }, 'Sending…'), /\bdisabled=""/)
 })
+
+test('linking writes only elder_id and preserves a concurrent link', async () => {
+  const staleTask = { id: 'task', circle_id: 'circle', elder_id: null }
+  const row = { ...staleTask, elder_id: 'already-linked' }
+  const filters = {}
+  let payload
+  let refreshed = false
+  const query = {
+    update(value) { payload = value; return this },
+    eq(key, value) { filters[key] = value; return this },
+    is(key, value) { filters[key] = value; return this },
+    select() { return this },
+    async maybeSingle() {
+      if (!Object.entries(filters).every(([key, value]) => row[key] === value)) return { data: null }
+      Object.assign(row, payload)
+      return { data: row }
+    },
+  }
+  const { useUpdateTask } = await load('../src/hooks/useUpdateTask.ts', {
+    react: { useRef: current => ({ current }), useState: value => [value, () => {}] },
+    '../lib/supabase': { supabase: { from(table) { assert.equal(table, 'tasks'); return query } } },
+    './useSession': { useSession: () => ({ me: { id: 'me', role: 'family' }, circle: { id: 'circle' } }) },
+    './useFamilyTasks': { useFamilyTasks: () => ({
+      acceptTask: () => assert.fail('A stale link must not be accepted'),
+      refetch: () => { refreshed = true },
+    }) },
+  })
+  assert.equal(await useUpdateTask().updateTask(staleTask, { elder_id: 'new-elder' }), false)
+  assert.deepEqual(payload, { elder_id: 'new-elder' })
+  assert.deepEqual(filters, { id: 'task', circle_id: 'circle', elder_id: null })
+  assert.equal(row.elder_id, 'already-linked')
+  assert.equal(refreshed, true)
+})
