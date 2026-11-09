@@ -93,3 +93,13 @@ test('multiple recipients round-trip through a task and are each matched by the 
   for (const id of recipientIds) assert.deepEqual(tasks.tasksForElder([row], id), [row])
   assert.deepEqual(tasks.tasksForElder([row], 'other'), [])
 })
+
+test('elder task feed removes a task when recipients change or the task is deleted', () => {
+  const linked = { ...task('linked'), care_recipient_ids: ['elder-a'], elder_id: 'elder-a' }
+  const reassigned = { ...linked, care_recipient_ids: ['elder-b'], elder_id: 'elder-b' }
+  const updated = tasks.mergeTaskChange([linked], { eventType: 'UPDATE', new: reassigned, old: {} }, 'circle-a')
+  assert.deepEqual(tasks.tasksForElder(updated, 'elder-a'), [])
+  assert.deepEqual(tasks.tasksForElder(updated, 'elder-b'), [reassigned])
+  const deleted = tasks.mergeTaskChange(updated, { eventType: 'DELETE', new: {}, old: { id: linked.id } }, 'circle-a')
+  assert.deepEqual(tasks.tasksForElder(deleted, 'elder-b'), [])
+})

@@ -55,7 +55,7 @@ export const en = {
     noJourney: 'No active journey',
   },
   elderly: {
-    menu: 'Menu', family: 'Family', tasks: 'Task',
+    backHome: 'Back to Home', menu: 'Menu', family: 'Family', tasks: 'Task',
     familyHint: 'Stay connected with your family', tasksHint: 'Manage and track care activities.',
     morning: (name: string) => `Good morning, ${name}!`,
     afternoon: (name: string) => `Good afternoon, ${name}!`,
