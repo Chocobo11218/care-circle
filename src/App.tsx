@@ -4,6 +4,7 @@ import { TaskDraftProvider } from './lib/task-draft'
 import { DraftProvider } from './lib/draft'
 import OnboardingGuard from './components/OnboardingGuard'
 import Landing from './pages/onboarding/Landing'
+import SignIn from './pages/onboarding/SignIn'
 import CreateAccount from './pages/onboarding/CreateAccount'
 import SelectRole from './pages/onboarding/SelectRole'
 import Name from './pages/onboarding/Name'
@@ -34,8 +35,9 @@ import ElderlyHome from './pages/elderly/ElderlyHome'
 export default function App() {
   return <BrowserRouter><SessionProvider><DraftProvider><TaskDraftProvider><Routes>
     <Route path="/" element={<Landing />} />
+    <Route path="/sign-in" element={<OnboardingGuard><SignIn /></OnboardingGuard>} />
     <Route path="/create-account" element={<OnboardingGuard><CreateAccount /></OnboardingGuard>} />
-    <Route path="/select-role" element={<OnboardingGuard><SelectRole /></OnboardingGuard>} />
+    <Route path="/select-role" element={<OnboardingGuard authenticated><SelectRole /></OnboardingGuard>} />
     <Route path="/name" element={<OnboardingGuard step="name"><Name /></OnboardingGuard>} />
     <Route path="/birthday" element={<OnboardingGuard step="birthday"><Birthday /></OnboardingGuard>} />
     <Route path="/get-started" element={<OnboardingGuard step="circle"><GetStarted /></OnboardingGuard>} />
@@ -61,6 +63,7 @@ export default function App() {
     <Route path="/family/home" element={<Navigate to="/family" replace />} />
     <Route path="/elderly" element={<OnboardingGuard step="membership" role="elderly"><ElderlyLayout /></OnboardingGuard>}>
       <Route index element={<ElderlyHome />} />
+      <Route path="profile" element={<Profile home="/elderly" />} />
       <Route path="members" element={<ElderlyMembers />} />
       <Route path="tasks" element={<ElderlyTasks />} />
       <Route path="tasks/:id" element={<ElderlyTaskDetails />} />

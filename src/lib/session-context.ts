@@ -6,8 +6,7 @@ export interface SessionValue {
   userId: string | null
   me: Member | null
   circle: Circle | null
-  ensureSignedIn: () => Promise<string>
-  refresh: () => Promise<void>
+  refresh: () => Promise<Member | null>
   resetDevice: () => Promise<void>
 }
 

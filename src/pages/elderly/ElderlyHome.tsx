@@ -25,25 +25,29 @@ export default function ElderlyHome() {
   useScreenEvent('elder_home')
   if (!me || !circle) return null
 
+  const hour = now.getHours()
+  const greeting = hour < 12 ? t.elderly.morning : hour < 18 ? t.elderly.afternoon : t.elderly.evening
+  const header = <header className="family-home-header">
+    <div className="min-w-0"><p>{formatHomeDate(now)}</p><h1>{greeting(me.first_name)}</h1></div>
+    <Link to="/elderly/profile" className="flex min-h-14 min-w-14 shrink-0 items-center justify-center rounded-full" aria-label={t.profile.title}>
+      <Avatar name={me.first_name} />
+    </Link>
+  </header>
+
   if (circle.created_by === userId) {
     if (members.loading || members.error) {
-      return <MemberFeedStatus loading={members.loading} error={members.error} retry={members.refetch} />
+      return <>{header}<MemberFeedStatus loading={members.loading} error={members.error} retry={members.refetch} /></>
     }
     if (!members.members.some(member => member.role === 'family' && !member.is_mock)) {
-      return <section className="family-empty-state">
+      return <>{header}<section className="family-empty-state">
         <h1 className="text-2xl font-semibold">{t.elderly.inviteTitle}</h1>
         <ShareInviteButton label={t.elderly.share} primary />
-      </section>
+      </section></>
     }
   }
 
-  const hour = now.getHours()
-  const greeting = hour < 12 ? t.elderly.morning : hour < 18 ? t.elderly.afternoon : t.elderly.evening
   return <>
-    <header className="family-home-header">
-      <div><p>{formatHomeDate(now)}</p><h1>{greeting(me.first_name)}</h1></div>
-      <Avatar name={me.first_name} />
-    </header>
+    {header}
     <section className="elder-section">
       <h2>{t.elderly.menu}</h2>
       <div className="grid grid-cols-2 gap-3">
