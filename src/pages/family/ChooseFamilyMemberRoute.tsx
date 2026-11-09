@@ -30,7 +30,8 @@ export default function ChooseFamilyMemberRoute() {
     if (state?.from) navigate(-1)
     else navigate(fallback, { replace: true })
   }
-  const candidates = assignmentCandidates(memberFeed.members, me?.id)
+  const members = memberFeed.members
+  const candidates = assignmentCandidates(me && !members.some(member => member.id === me.id) ? [...members, me] : members)
   const selected = candidates.find(member => member.id === (id ? selection : draft.assigneeId))
   const elders = splitMembers(memberFeed.members).realElders
   const elderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
@@ -62,7 +63,7 @@ export default function ChooseFamilyMemberRoute() {
   }
 
   return <ChooseFamilyMemberPage task={task} candidates={candidates} selected={selected} busy={busy}
-    assigned={!!id && task.assignee_id !== null}
+    currentMemberId={me?.id} isDraft={!id} assigned={!!id && task.assignee_id !== null}
     error={assignment.error ? t.taskList.assignError : undefined}
     onSelect={id ? setSelection : assigneeId => update({ assigneeId })}
     onBack={() => { if (!busy) back() }} onSend={memberId => void send(memberId)} />

@@ -56,6 +56,7 @@ test('assignment updates only the assignee and loses safely to a concurrent assi
 test('Send request is disabled until a candidate is selected and while sending or already assigned', async () => {
   const empty = () => null
   const { default: Picker } = await load('../src/pages/family/ChooseFamilyMemberPage.tsx', {
+    '../../lib/members': await load('../src/lib/members.ts'),
     '../../components/Button': await load('../src/components/Button.tsx'),
     '../../components/TopBar': empty,
     '../../components/family/Avatar': empty,
@@ -75,7 +76,9 @@ test('Send request is disabled until a candidate is selected and while sending o
     return button[1]
   }
 
-  assert.match(sendButton({}), /\bdisabled=""/)
+  assert.match(sendButton({ isDraft: true }, 'Confirm'), /\bdisabled=""/)
+  assert.doesNotMatch(sendButton({ isDraft: true, selected }, 'Confirm'), /\bdisabled=""/)
+  assert.match(sendButton({ isDraft: false }), /\bdisabled=""/)
   assert.doesNotMatch(sendButton({ selected }), /\bdisabled=""/)
   assert.match(sendButton({ selected, assigned: true }), /\bdisabled=""/)
   assert.match(sendButton({ selected, busy: true }, 'Sending…'), /\bdisabled=""/)
