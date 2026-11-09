@@ -25,6 +25,7 @@ export default function ChooseFamilyMemberRoute() {
   const assignment = useAssignTask()
   const [selection, setSelection] = useState<string | null>(null)
   useScreenEvent('choose_member')
+  const canReassign = !!id && state && 'expectedAssignee' in state && state.from === `/family/tasks/${id}/edit`
   const fallback = id ? `/family/tasks/${id}` : '/family/tasks/new'
   const back = () => {
     if (state?.from) navigate(-1)
@@ -55,7 +56,7 @@ export default function ChooseFamilyMemberRoute() {
   async function send(memberId: string) {
     if (!task || busy || !candidates.some(member => member.id === memberId)) return
     if (id) {
-      if (await assignment.assign(task, memberId)) back()
+      if (await assignment.assign(task, memberId, canReassign ? state.expectedAssignee : null)) back()
       return
     }
     update({ assigneeId: memberId })
@@ -63,7 +64,7 @@ export default function ChooseFamilyMemberRoute() {
   }
 
   return <ChooseFamilyMemberPage task={task} candidates={candidates} selected={selected} busy={busy}
-    currentMemberId={me?.id} isDraft={!id} assigned={!!id && task.assignee_id !== null}
+    currentMemberId={me?.id} isDraft={!id} assigned={!!id && task.assignee_id !== (canReassign ? state.expectedAssignee : null)}
     error={assignment.error ? t.taskList.assignError : undefined}
     onSelect={id ? setSelection : assigneeId => update({ assigneeId })}
     onBack={() => { if (!busy) back() }} onSend={memberId => void send(memberId)} />

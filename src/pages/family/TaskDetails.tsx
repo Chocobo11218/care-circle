@@ -29,9 +29,9 @@ export default function TaskDetails() {
       <div className="task-divider" />
       <section className="task-description-block"><h3>{t.taskDetails.description}</h3><p>{task.description || t.taskDetails.noDescription}</p></section>
       {task.note && <section className="task-note-box"><h3>{t.taskDetails.note}</h3><p>{task.note}</p></section>}
-      {task.elder_id === null && <Link className="task-pill-link" to={`/family/tasks/${task.id}/choose-elder`}>{t.chooseElder.title}</Link>}
+      {task.elder_id === null && <Link className="task-pill-link" to={`/family/tasks/${task.id}/choose-elder`} state={{ fromDetails: true }}>{t.chooseElder.title}</Link>}
       <TaskAssignment task={task} />
     </article>
-    <div className="task-edit-action"><Link className="task-pill-link" to={`/family/tasks/${task.id}/edit`}><TaskIcon kind="edit" />{t.taskEdit.title}</Link></div></>}
+    <div className="task-edit-action"><Link className="task-pill-link" to={`/family/tasks/${task.id}/edit`} state={{ fromDetails: true }}><TaskIcon kind="edit" />{t.taskEdit.title}</Link></div></>}
   </>
 }

@@ -5,7 +5,7 @@ const tasks = await loadTypeScript(new URL('../src/lib/tasks.ts', import.meta.ur
 const dates = await loadTypeScript(new URL('../src/lib/date.ts', import.meta.url))
 const now = new Date(2026, 9, 14, 23, 50)
 const draft = { elderId: null, title: 'Appointment', date: '2026-10-14', location: '', startTime: '', endTime: '', description: '', note: '' }
-const task = (id, date = '2026-10-14', start = null, assignee = null) => ({ id, circle_id:'circle-a', title:id, task_date:date, start_time:start, end_time:null, assignee_id:assignee, elder_id:null, created_by:'member-a', location:null, description:null, note:null, created_at:'2026-10-14T00:00:00Z' })
+const task = (id, date = '2026-10-14', start = null, assignee = null, elder = null) => ({ id, circle_id:'circle-a', title:id, task_date:date, start_time:start, end_time:null, assignee_id:assignee, elder_id:elder, created_by:'member-a', location:null, description:null, note:null, created_at:'2026-10-14T00:00:00Z' })
 
 test('date is required even without an elder; name and date suffice with no elder', () => {
   assert.deepEqual(tasks.validateTaskDraft(draft, [], null, now), {})
@@ -37,10 +37,11 @@ test('sorts dates then times, with missing dates and times last, without mutatio
   assert.deepEqual(tasks.sortTasks(input).map(t=>t.id),['morning','afternoon','no-time','later','undated'])
   assert.equal(input[0].id,'undated')
 })
-test('derived sections never put assigned tasks under Needs Attention', () => {
-  const input=[task('unassigned-past','2026-10-13'),task('assigned-today','2026-10-14',null,'member-a'),task('assigned-future','2026-10-15',null,'member-a'),task('assigned-past','2026-10-13',null,'member-a'),task('legacy-undated',null,null,'member-a')]
+test('derived sections put unassigned and unlinked tasks under Needs Attention', () => {
+  const input=[task('unassigned-past','2026-10-13'),task('assigned-today','2026-10-14',null,'member-a','elder-a'),task('assigned-future','2026-10-15',null,'member-a','elder-a'),task('assigned-past','2026-10-13',null,'member-a','elder-a'),task('legacy-undated',null,null,'member-a','elder-a')]
+  input.push(task('assigned-unlinked','2026-10-15',null,'member-a'))
   const sections=tasks.taskSections(input,now)
-  assert.deepEqual(sections.attention.map(t=>t.id),['unassigned-past'])
+  assert.deepEqual(sections.attention.map(t=>t.id),['unassigned-past','assigned-unlinked'])
   assert.deepEqual(sections.upcoming.map(t=>t.id),['assigned-today','assigned-future'])
 })
 test('realtime merge deduplicates, updates, ignores other circles, and handles primary-key deletes', () => {
@@ -67,4 +68,18 @@ test('same-year labels omit year; other-year labels honor Buddhist-year setting'
   assert.equal(dates.formatTaskDateLabel('2027-10-14',now,true),'14 October 2570')
   assert.equal(dates.USE_BUDDHIST_YEAR,false)
   assert.ok(dates.parseTaskDate('2028-02-29'));assert.equal(dates.parseTaskDate('2027-02-29'),null)
+})
+
+test('elder task feed excludes unlinked tasks and tasks linked to another elder', () => {
+  const unlinked = task('pending')
+  const other = { ...task('other'), elder_id: 'elder-b' }
+  assert.deepEqual(tasks.tasksForElder([unlinked, other], 'elder-a'), [])
+})
+
+test('a task enters the elder task feed once linked to that elder', () => {
+  const pending = task('pending')
+  const linked = { ...pending, elder_id: 'elder-a' }
+  const changed = tasks.mergeTaskChange([pending], { eventType: 'UPDATE', new: linked, old: {} }, 'circle-a')
+  assert.deepEqual(tasks.tasksForElder(changed, 'elder-a'), [linked])
+  assert.deepEqual(tasks.tasksForElder(changed, 'elder-b'), [])
 })

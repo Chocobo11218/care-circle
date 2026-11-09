@@ -26,14 +26,19 @@ export default function ChooseOlderAdult() {
   const canSave = task?.elder_id === null && elders.some(elder => elder.id === selected)
   const destination = state?.fromHome ? '/family' : `/family/tasks/${id}`
 
+  function back() {
+    if (state?.fromHome || state?.fromDetails) navigate(-1)
+    else navigate(destination, { replace: true })
+  }
+
   async function save(event: FormEvent) {
     event.preventDefault()
     if (!canSave || !task || !selected || busy) return
-    if (await updateTask(task, { elder_id: selected })) navigate(destination, { replace: true })
+    if (await updateTask(task, { elder_id: selected })) back()
   }
 
   return <>
-    <TopBar title={t.chooseElder.title} onBack={() => { if (!busy) navigate(destination, { replace: true }) }} />
+    <TopBar title={t.chooseElder.title} onBack={() => { if (!busy) back() }} />
     <TaskFeedStatus />
     <MemberFeedStatus loading={members.loading} error={members.error && !members.members.length} retry={members.refetch} />
     {!tasks.loading && !tasks.error && !task && <p role="status">{t.taskDetails.missing}</p>}

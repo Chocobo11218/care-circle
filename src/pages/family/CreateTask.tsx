@@ -1,38 +1,47 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import TopBar from '../../components/TopBar'
 import Avatar from '../../components/family/Avatar'
+import ElderOptions from '../../components/tasks/ElderOptions'
 import MemberFeedStatus from '../../components/family/MemberFeedStatus'
 import TaskIcon from '../../components/tasks/TaskIcon'
 import { useSession } from '../../hooks/useSession'
 import { useTaskDraft } from '../../hooks/useTaskDraft'
 import { useFamilyMembers } from '../../hooks/useFamilyMembers'
+import { useUpdateTask } from '../../hooks/useUpdateTask'
 import { useCreateTask } from '../../hooks/useCreateTask'
 import AssignmentIcon from '../../components/tasks/AssignmentIcon'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { splitMembers } from '../../lib/members'
 import { localISODate } from '../../lib/date'
-import { validateTaskDraft, type TaskErrors } from '../../lib/tasks'
+import { taskFields, validateTaskDraft, type TaskErrors } from '../../lib/tasks'
+import type { Task } from '../../types'
 import { t } from '../../i18n/en'
 
-export default function CreateTask() {
+export default function CreateTask({ editing }: { editing?: Task }) {
   const { me } = useSession()
   const { draft, update, clear } = useTaskDraft()
   const { members, loading, error: memberError, refetch } = useFamilyMembers()
-  const { create, busy, error: saveError } = useCreateTask()
+  const creation = useCreateTask()
+  const edit = useUpdateTask()
+  const busy = creation.busy || edit.busy
+  const saveError = editing ? edit.error : creation.error
+  const detailsPath = editing ? `/family/tasks/${editing.id}` : undefined
   const now = useLocalClock()
   const navigate = useNavigate()
+  const { state } = useLocation()
   const [errors, setErrors] = useState<TaskErrors>({})
   const formRef = useRef<HTMLFormElement>(null)
-  useScreenEvent('create_task')
+  useScreenEvent(editing ? 'edit_task' : 'create_task')
   const elders = splitMembers(members).realElders
   const selectedElderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
   const elderError = elders.length > 0 && !selectedElderId ? errors.elderId : undefined
   const blocked = loading || (memberError && !members.length) || busy
-  const chosen = me?.id === draft.assigneeId ? me : members.find(member => member.role === 'family' && member.id === draft.assigneeId)
+  const assigneeId = editing ? editing.assignee_id : draft.assigneeId
+  const chosen = me?.id === assigneeId ? me : members.find(member => member.role === 'family' && member.id === assigneeId)
 
   function validate() {
     if (blocked || !me) return false
@@ -49,25 +58,34 @@ export default function CreateTask() {
     navigate('/family/tasks/new/choose-member', { state: { from: '/family/tasks/new' } })
   }
 
+  function backToDetails() {
+    if (state?.fromDetails) navigate(-1)
+    else if (detailsPath) navigate(detailsPath, { replace: true })
+  }
+
   async function save() {
     if (!validate() || !me) return
-    const task = await create(draft, selectedElderId, chosen?.id ?? null)
+    if (editing) {
+      const { elder_id, ...fields } = taskFields(draft, selectedElderId)
+      if (await edit.updateTask(editing, elder_id && elder_id !== editing.elder_id ? { ...fields, elder_id } : fields)) {
+        backToDetails()
+      }
+      return
+    }
+    const task = await creation.create(draft, selectedElderId, chosen?.id ?? null)
     if (!task) return
     clear()
     navigate(task.assignee_id ? `/family/tasks/${task.id}` : '/family/tasks', { replace: true })
   }
   function submit(event: FormEvent) { event.preventDefault(); void save() }
   return <>
-    <TopBar title={t.taskCreate.title} />
+    <TopBar title={editing ? t.taskEdit.title : t.taskCreate.title}
+      onBack={detailsPath ? () => { if (!busy) backToDetails() } : undefined} />
     <form ref={formRef} className="task-create-form" noValidate onSubmit={submit}>
       <section><h2>{t.taskCreate.who}</h2>
         <MemberFeedStatus loading={loading} error={memberError && !members.length} retry={refetch} />
-        {!loading && !(memberError && !members.length) && (elders.length ? <fieldset className="task-elder-options" role="radiogroup" aria-required="true" aria-label={t.taskCreate.who} aria-invalid={!!elderError} aria-describedby={elderError ? 'task-elder-error' : undefined} tabIndex={-1}>
-          {elders.map(elder => <label key={elder.id} className={`task-elder-option ${selectedElderId === elder.id ? 'task-selected-elder' : ''}`}>
-            <input type="radio" name="elder" value={elder.id} checked={selectedElderId === elder.id} disabled={busy} onChange={() => update({ elderId: elder.id })} />
-            <Avatar name={elder.first_name} small /><span className="min-w-0 flex-1 break-words">{elder.first_name}</span><span className="task-elder-badge">{t.taskCreate.elderly}</span>
-          </label>)}
-        </fieldset> : <><Input label={t.taskCreate.who} value={t.taskCreate.noElder} disabled /><Link className="task-invite-link" to="/family/add-member">{t.taskCreate.invite}</Link></>)}
+        {!loading && !(memberError && !members.length) && (elders.length ? <ElderOptions elders={elders} selected={selectedElderId} onSelect={elderId => update({ elderId })}
+          label={t.taskCreate.who} error={elderError} disabled={busy} /> : <><Input label={t.taskCreate.who} value={t.taskCreate.noElder} disabled /><Link className="task-invite-link" to="/family/add-member">{t.taskCreate.invite}</Link></>)}
         {elderError && <p role="alert" id="task-elder-error" className="task-field-error">{elderError}</p>}
       </section>
       <section className="form-stack"><h2>{t.taskCreate.details}</h2>
@@ -82,7 +100,11 @@ export default function CreateTask() {
       <section>
         <h2>{t.taskCreate.responsibility}</h2>
         <div className="task-responsibility">
-          {chosen ? <>
+          {editing ? <>
+            {assigneeId ? <div className="task-assignee"><Avatar name={chosen?.first_name ?? t.taskList.familyMember} small />
+              <p>{t.taskList.assigned(chosen?.first_name ?? t.taskList.familyMember)}</p></div> : <p>{t.taskEdit.unassigned}</p>}
+            <Link className="task-pill-link" to={`${detailsPath}/choose-member`} state={{ from: `${detailsPath}/edit`, expectedAssignee: editing.assignee_id }}>{t.chooseMember.someoneElse}</Link>
+          </> : chosen ? <>
             <div className="task-assignee"><Avatar name={chosen.first_name} small /><p>{t.taskList.assigned(chosen.first_name)}</p></div>
             <Button type="button" variant="outline" className="family-pill" disabled={blocked} onClick={openPicker}>{t.chooseMember.someoneElse}</Button>
           </> : <>
@@ -93,8 +115,8 @@ export default function CreateTask() {
           </>}
         </div>
       </section>
-      {saveError && <p role="alert" className="text-error">{t.taskCreate.saveError}</p>}
-      <Button type="submit" variant="secondary" className="family-pill" disabled={blocked}>{busy ? t.taskCreate.saving : t.taskCreate.save}</Button>
+      {saveError && <p role="alert" className="text-error">{editing ? t.taskEdit.error : t.taskCreate.saveError}</p>}
+      <Button type="submit" variant="secondary" className="family-pill" disabled={blocked}>{busy ? t.taskCreate.saving : editing ? t.taskEdit.save : t.taskCreate.save}</Button>
     </form>
   </>
 }
