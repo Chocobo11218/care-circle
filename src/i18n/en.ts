@@ -37,7 +37,7 @@ export const en = {
     nameRequired: 'Enter a task name.', dateRequired: 'Select a date.', dateInvalid: 'Select a valid date that is not in the past.',
     elderRequired: 'Select who needs care.', endInvalid: 'End time must be after start time.',
     saveError: 'Unable to save your task. Please try again.' },
-  taskDetails: { title: 'Task details', description: 'Task description', noDescription: 'No task description.', note: 'Note',
+  taskDetails: { title: 'Task details', noRecipient: 'No care recipient selected', description: 'Task description', noDescription: 'No task description.', note: 'Note',
     missing: 'This task does not exist or has been deleted.', back: 'Back to Tasks' },
   familyNav: { home: 'Home', tasks: 'Tasks', family: 'Family', label: 'Family navigation' },
   familyCommon: { loading: 'Loading members…', error: 'Unable to load your family. Please try again.',
