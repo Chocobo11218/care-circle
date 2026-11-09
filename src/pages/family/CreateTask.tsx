@@ -27,7 +27,7 @@ export default function CreateTask() {
   const navigate = useNavigate()
   const [errors, setErrors] = useState<TaskErrors>({})
   const formRef = useRef<HTMLFormElement>(null)
-  useScreenEvent('/family/tasks/new')
+  useScreenEvent('create_task')
   const elders = splitMembers(members).realElders
   const selectedElderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
   const elderError = elders.length > 0 && !selectedElderId ? errors.elderId : undefined

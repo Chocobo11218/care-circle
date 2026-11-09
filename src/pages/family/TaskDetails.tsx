@@ -15,7 +15,7 @@ export default function TaskDetails() {
   const { tasks, loading, error } = useFamilyTasks()
   const members = useFamilyMembers()
   const now = useLocalClock()
-  useScreenEvent('/family/tasks/:id')
+  useScreenEvent('task_details')
   const task = tasks.find(task => task.id === id)
   return <>
     <TopBar title={t.taskDetails.title} />

@@ -6,7 +6,7 @@ import ts from 'typescript'
 // Use the project's existing TypeScript compiler; no test dependency is needed.
 const source = await readFile(new URL('../src/lib/members.ts', import.meta.url), 'utf8')
 const javascript = ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.ESNext } }).outputText
-const { splitMembers, orderedMembers, mergeMemberChange } = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`)
+const { splitMembers, orderedMembers, mergeMemberChange, assignmentCandidates } = await import(`data:text/javascript;base64,${Buffer.from(javascript).toString('base64')}`)
 const member = (id, role, is_mock = false, circle_id = 'circle-a') => ({
   id, circle_id, role, is_mock, user_id: `user-${id}`, first_name: id, last_name: null,
   birthday: null, joined_at: '2026-01-01T00:00:00Z', availability: null,
@@ -67,4 +67,13 @@ test('replays changes received during an older fetch without resurrecting a dele
   const current = changes.reduce((members, change) => mergeMemberChange(members, change, 'circle-a'), staleSnapshot)
   assert.deepEqual(current.map(row => row.id), [family.id, mockFamily.id])
   assert.equal(current[0].first_name, 'Updated')
+})
+
+test('ranks mock caregivers ahead of other real family members and excludes self and elders', () => {
+  const best = { ...mockFamily, id: 'best', match_label: 'best' }
+  const good = { ...mockFamily, id: 'good', match_label: 'good' }
+  const alternative = { ...mockFamily, id: 'alternative', match_label: 'alternative' }
+  const me = member('me', 'family')
+  const members = [alternative, family, good, mockElder, me, elder, best]
+  assert.deepEqual(assignmentCandidates(members, me.id), [best, good, alternative, family])
 })

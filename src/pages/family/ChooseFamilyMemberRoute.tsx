@@ -27,7 +27,7 @@ export default function ChooseFamilyMemberRoute() {
   const assignment = useAssignTask()
   const [selection, setSelection] = useState<string | null>(null)
   const [invalidDraft, setInvalidDraft] = useState(false)
-  useScreenEvent(id ? '/family/tasks/:id/choose-member' : '/family/tasks/new/choose-member')
+  useScreenEvent('choose_member')
   const fallback = id ? `/family/tasks/${id}` : '/family/tasks/new'
   const back = () => {
     if (state?.from) navigate(-1)
