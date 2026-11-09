@@ -5,14 +5,13 @@ import TopBar from '../../components/TopBar'
 import MemberFeedStatus from '../../components/family/MemberFeedStatus'
 import TaskFeedStatus from '../../components/tasks/TaskFeedStatus'
 import { useAssignTask } from '../../hooks/useAssignTask'
-import { useCreateTask } from '../../hooks/useCreateTask'
 import { useFamilyMembers } from '../../hooks/useFamilyMembers'
 import { useFamilyTasks } from '../../hooks/useFamilyTasks'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { useTaskDraft } from '../../hooks/useTaskDraft'
 import { assignmentCandidates, splitMembers } from '../../lib/members'
-import { taskInsert, validateTaskDraft } from '../../lib/tasks'
+import { taskInsert } from '../../lib/tasks'
 import { t } from '../../i18n/en'
 
 export default function ChooseFamilyMemberRoute() {
@@ -20,13 +19,11 @@ export default function ChooseFamilyMemberRoute() {
   const { state } = useLocation()
   const navigate = useNavigate()
   const { me, circle } = useSession()
-  const { draft, update, clear } = useTaskDraft()
+  const { draft, update } = useTaskDraft()
   const memberFeed = useFamilyMembers()
   const taskFeed = useFamilyTasks()
-  const creation = useCreateTask()
   const assignment = useAssignTask()
   const [selection, setSelection] = useState<string | null>(null)
-  const [invalidDraft, setInvalidDraft] = useState(false)
   useScreenEvent('choose_member')
   const fallback = id ? `/family/tasks/${id}` : '/family/tasks/new'
   const back = () => {
@@ -39,8 +36,8 @@ export default function ChooseFamilyMemberRoute() {
   const elderId = elders.find(elder => elder.id === draft.elderId)?.id ?? (elders.length === 1 ? elders[0].id : null)
   const task = id ? taskFeed.tasks.find(task => task.id === id)
     : me && circle ? { ...taskInsert(draft, circle.id, me.id, elderId, null), id: '', created_at: '' } : undefined
-  const busy = creation.busy || assignment.busy
-  if (!id && (!draft.title.trim() || !draft.date) && !busy) return <Navigate to={fallback} replace />
+  const busy = assignment.busy
+  if (!id && (!draft.title.trim() || !draft.date)) return <Navigate to={fallback} replace />
   if (memberFeed.loading || (memberFeed.error && !memberFeed.members.length) || (id && (taskFeed.loading || (taskFeed.error && !task)))) {
     return <>
       <TopBar title={t.chooseMember.title} onBack={back} />
@@ -60,19 +57,13 @@ export default function ChooseFamilyMemberRoute() {
       if (await assignment.assign(task, memberId)) back()
       return
     }
-    if (Object.keys(validateTaskDraft(draft, elders.map(elder => elder.id), elderId)).length) {
-      setInvalidDraft(true)
-      return
-    }
-    const saved = await creation.create(draft, elderId, memberId)
-    if (!saved) return
-    clear()
-    navigate(`/family/tasks/${saved.id}`, { replace: true })
+    update({ assigneeId: memberId })
+    back()
   }
 
   return <ChooseFamilyMemberPage task={task} candidates={candidates} selected={selected} busy={busy}
     assigned={!!id && task.assignee_id !== null}
-    error={invalidDraft ? t.chooseMember.draftInvalid : creation.error ? t.taskCreate.saveError : assignment.error ? t.taskList.assignError : undefined}
+    error={assignment.error ? t.taskList.assignError : undefined}
     onSelect={id ? setSelection : assigneeId => update({ assigneeId })}
     onBack={() => { if (!busy) back() }} onSend={memberId => void send(memberId)} />
 }

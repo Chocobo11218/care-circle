@@ -9,7 +9,6 @@ export const en = {
     selectName: (name: string) => `Select ${name}`, selectedName: (name: string) => `Selected ${name}`,
     send: 'Send request', sending: 'Sending…', someoneElse: 'Choose someone else',
     find: 'Find the most suitable family member', empty: 'No family members are available to select.',
-    draftInvalid: 'Review the task details before sending the request.',
     suggested: 'Suggested', or: 'or', request: (name: string) => `Request ${name}`,
     alreadyAssigned: 'This task has already been assigned.',
   },

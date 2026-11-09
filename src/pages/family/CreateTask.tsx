@@ -54,7 +54,7 @@ export default function CreateTask() {
     const task = await create(draft, selectedElderId, selfAssign ? me.id : chosen?.id ?? null)
     if (!task) return
     clear()
-    navigate(selfAssign ? `/family/tasks/${task.id}` : '/family/tasks', { replace: true })
+    navigate(task.assignee_id ? `/family/tasks/${task.id}` : '/family/tasks', { replace: true })
   }
   function submit(event: FormEvent) { event.preventDefault(); void save(false) }
   return <>
