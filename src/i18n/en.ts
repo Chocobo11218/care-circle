@@ -1,5 +1,18 @@
 export const en = {
   appName: 'CareCircle',
+  chooseMember: {
+    title: 'Choose family member', who: 'Who can take care?', description: 'Task Description',
+    info: 'About these suggestions', explanation: 'These suggestions are examples for this test.', close: 'Close',
+    labels: { best: 'Best match', good: 'Good match', alternative: 'Alternative' },
+    distance: (km: number) => `${km} km away`, why: 'Why this match?',
+    select: 'Select', selected: 'Selected', selectedMembers: 'Selected family members',
+    selectName: (name: string) => `Select ${name}`, selectedName: (name: string) => `Selected ${name}`,
+    send: 'Send request', sending: 'Sending…', someoneElse: 'Choose someone else',
+    find: 'Find the most suitable family member', empty: 'No family members are available to select.',
+    draftInvalid: 'Review the task details before sending the request.',
+    suggested: 'Suggested', or: 'or', request: (name: string) => `Request ${name}`,
+    alreadyAssigned: 'This task has already been assigned.',
+  },
   taskDates: { today: 'Today', tomorrow: 'Tomorrow', noDate: 'No date set', unscheduled: 'Date and time not set',
     row: (relative: string, date: string, time: string) => [relative, date, time].filter(Boolean).join(' · '),
     range: (start: string, end: string) => `${start} – ${end}`, startsAt: (time: string) => `Starts at ${time}`, endsAt: (time: string) => `Ends at ${time}` },

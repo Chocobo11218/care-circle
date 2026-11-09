@@ -32,8 +32,8 @@ export function validateTaskDraft(draft: TaskDraft, elderIds: string[], selected
   if (draft.startTime && draft.endTime && draft.endTime <= draft.startTime) errors.endTime = t.taskCreate.endInvalid
   return errors
 }
-export function taskInsert(draft: TaskDraft, circleId: string, memberId: string, elderId: string | null, selfAssign: boolean) {
-  return { circle_id: circleId, created_by: memberId, elder_id: elderId, assignee_id: selfAssign ? memberId : null,
+export function taskInsert(draft: TaskDraft, circleId: string, memberId: string, elderId: string | null, assigneeId: string | null) {
+  return { circle_id: circleId, created_by: memberId, elder_id: elderId, assignee_id: assigneeId,
     title: draft.title.trim(), location: draft.location.trim() || null, task_date: draft.date,
     start_time: draft.startTime || null, end_time: draft.endTime || null,
     description: draft.description.trim() || null, note: draft.note.trim() || null }

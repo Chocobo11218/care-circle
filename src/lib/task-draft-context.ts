@@ -1,6 +1,7 @@
 import { createContext } from 'react'
 
 export interface TaskDraft {
+  assigneeId: string | null
   elderId: string | null
   title: string
   location: string
@@ -11,6 +12,6 @@ export interface TaskDraft {
   note: string
 }
 
-export const emptyTaskDraft: TaskDraft = { elderId: null, title: '', location: '', date: '', startTime: '', endTime: '', description: '', note: '' }
+export const emptyTaskDraft: TaskDraft = { assigneeId: null, elderId: null, title: '', location: '', date: '', startTime: '', endTime: '', description: '', note: '' }
 export interface TaskDraftValue { draft: TaskDraft; update: (patch: Partial<TaskDraft>) => void; clear: () => void }
 export const TaskDraftContext = createContext<TaskDraftValue | null>(null)
