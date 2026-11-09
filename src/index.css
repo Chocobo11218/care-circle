@@ -123,6 +123,8 @@ button:not(:disabled), a { cursor: pointer; }
 .task-date-label { color: var(--color-btn-primary); font-weight: 600; }
 .task-divider { height: 1px; background: var(--color-stroke); margin-block: 1rem; }
 .task-elder-pill { display: flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1rem; border-radius: 1.5rem; background: var(--color-support-3); font-weight: 500; }
+.task-elder-pill-empty { background: var(--color-support-2); }
+
 .task-facts { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem; }
 .task-facts p { display: flex; align-items: flex-start; gap: 0.5rem; line-height: 1.5; }
 .task-facts svg { flex-shrink: 0; margin-top: 0.125rem; }

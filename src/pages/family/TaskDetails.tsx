@@ -25,8 +25,8 @@ export default function TaskDetails() {
     {!loading && !error && !task && <div className="family-feed-status"><p role="status">{t.taskDetails.missing}</p><Link className="task-invite-link" to="/family/tasks">{t.taskDetails.back}</Link></div>}
     {!loading && !members.loading && task && <><article className="task-detail-card">
       <h2>{task.title}</h2><div className="task-divider" />
-      <TaskFacts task={task} now={now} creator elderAction={
-        <Link className="task-pill-link" to={`/family/tasks/${task.id}/choose-elder`} state={{ fromDetails: true }}>{t.chooseElder.title}</Link>
+      <TaskFacts task={task} now={now} creator emptyRecipient={
+        <p className="task-elder-pill task-elder-pill-empty">{t.taskDetails.noRecipient}</p>
       } />
       <div className="task-divider" />
       <section className="task-description-block"><h3>{t.taskDetails.description}</h3><p>{task.description || t.taskDetails.noDescription}</p></section>
