@@ -25,6 +25,7 @@ import ChooseOlderAdult from './pages/family/ChooseOlderAdult'
 import EditTask from './pages/family/EditTask'
 import SavedTaskDraft from './pages/family/SavedTaskDraft'
 import TaskDetails from './pages/family/TaskDetails'
+import ElderlyLayout from './pages/elderly/ElderlyLayout'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
 export default function App() {
@@ -55,6 +56,9 @@ export default function App() {
       </Route>
     </Route>
     <Route path="/family/home" element={<Navigate to="/family" replace />} />
-    <Route path="/elderly/home" element={<OnboardingGuard step="membership"><ElderlyHome /></OnboardingGuard>} />
+    <Route path="/elderly" element={<OnboardingGuard step="membership" role="elderly"><ElderlyLayout /></OnboardingGuard>}>
+      <Route index element={<ElderlyHome />} />
+    </Route>
+    <Route path="/elderly/home" element={<Navigate to="/elderly" replace />} />
   </Routes></TaskDraftProvider></DraftProvider></SessionProvider></BrowserRouter>
 }
