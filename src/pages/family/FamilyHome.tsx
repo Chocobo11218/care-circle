@@ -2,6 +2,9 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import Avatar from '../../components/family/Avatar'
 import PlusIcon from '../../components/family/PlusIcon'
+import TaskSections from '../../components/tasks/TaskSections'
+import TaskFeedStatus from '../../components/tasks/TaskFeedStatus'
+import { useFamilyTasks } from '../../hooks/useFamilyTasks'
 import ActivityEmptyState from '../../components/family/ActivityEmptyState'
 import MemberFeedStatus from '../../components/family/MemberFeedStatus'
 import { useSession } from '../../hooks/useSession'
@@ -16,6 +19,7 @@ import familyIllustration from '../../assets/family-hug.svg'
 export default function FamilyHome() {
   const { me } = useSession()
   const { members, loading, error, refetch } = useFamilyMembers()
+  const taskFeed = useFamilyTasks()
   const now = useLocalClock()
   const navigate = useNavigate()
   useScreenEvent('/family')
@@ -28,12 +32,16 @@ export default function FamilyHome() {
       <Avatar name={me.first_name} small />
     </header>
     <MemberFeedStatus loading={loading} error={error && !members.length} retry={refetch} />
-    {!loading && !(error && !members.length) && (hasOthers ? <>
+    {!loading && taskFeed.loading && <TaskFeedStatus />}
+    {!loading && !taskFeed.loading && taskFeed.error && !taskFeed.tasks.length && <TaskFeedStatus />}
+    {!loading && !taskFeed.loading && !(taskFeed.error && !taskFeed.tasks.length) && !(error && !members.length) && (hasOthers || taskFeed.tasks.length > 0 ? <>
       {realElders.length > 0 && <section className="family-summary" aria-label={t.familyHome.atHome(realElders.map(member => member.first_name))}>
         <div className="family-avatar-stack">{realElders.map(member => <Avatar key={member.id} name={member.first_name} />)}</div>
         <div className="min-w-0"><h2>{t.familyHome.atHome(realElders.map(member => member.first_name))}</h2><p>{t.familyHome.noJourney}</p></div>
       </section>}
-      <ActivityEmptyState />
+      <TaskFeedStatus />
+      {!taskFeed.loading && !taskFeed.error && (taskFeed.tasks.length ? <TaskSections /> : <ActivityEmptyState />)}
+      {!taskFeed.loading && taskFeed.tasks.length > 0 && <Button className="family-pill family-action-button mt-5" onClick={() => navigate('/family/tasks/new')}><PlusIcon />{t.familyTasks.add}</Button>}
     </> : <section className="family-empty-state family-circle-empty">
       <div className="family-illustration-slot"><img src={familyIllustration} alt={t.familyHome.illustration} className="family-illustration" /></div>
       <h2>{t.familyHome.emptyTitle}</h2>

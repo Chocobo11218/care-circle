@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { SessionProvider } from './lib/session'
+import { TaskDraftProvider } from './lib/task-draft'
 import { DraftProvider } from './lib/draft'
 import OnboardingGuard from './components/OnboardingGuard'
 import Landing from './pages/onboarding/Landing'
@@ -17,11 +18,12 @@ import FamilyLayout from './components/family/FamilyLayout'
 import FamilyTasks from './pages/family/FamilyTasks'
 import FamilyMembers from './pages/family/FamilyMembers'
 import FamilyAddMember from './pages/family/FamilyAddMember'
-import NewTaskPlaceholder from './pages/family/NewTaskPlaceholder'
+import CreateTask from './pages/family/CreateTask'
+import TaskDetails from './pages/family/TaskDetails'
 import ElderlyHome from './pages/elderly/ElderlyHome'
 
 export default function App() {
-  return <BrowserRouter><SessionProvider><DraftProvider><Routes>
+  return <BrowserRouter><SessionProvider><DraftProvider><TaskDraftProvider><Routes>
     <Route path="/" element={<Landing />} />
     <Route path="/create-account" element={<OnboardingGuard><CreateAccount /></OnboardingGuard>} />
     <Route path="/select-role" element={<OnboardingGuard><SelectRole /></OnboardingGuard>} />
@@ -37,9 +39,10 @@ export default function App() {
       <Route path="tasks" element={<FamilyTasks />} />
       <Route path="members" element={<FamilyMembers />} />
       <Route path="add-member" element={<FamilyAddMember />} />
-      <Route path="tasks/new" element={<NewTaskPlaceholder />} />
+      <Route path="tasks/new" element={<CreateTask />} />
+      <Route path="tasks/:id" element={<TaskDetails />} />
     </Route>
     <Route path="/family/home" element={<Navigate to="/family" replace />} />
     <Route path="/elderly/home" element={<OnboardingGuard step="membership"><ElderlyHome /></OnboardingGuard>} />
-  </Routes></DraftProvider></SessionProvider></BrowserRouter>
+  </Routes></TaskDraftProvider></DraftProvider></SessionProvider></BrowserRouter>
 }
