@@ -25,3 +25,14 @@ test('resend cooldown rounds up and becomes available at the deadline', () => {
   assert.equal(resendSeconds(deadline, deadline), 0)
   assert.equal(resendSeconds(deadline, deadline + 10), 0)
 })
+
+const { isStudyContactValid, studyCode } = await loadTypeScript(new URL('../src/lib/study-signup.ts', import.meta.url))
+
+test('study signup accepts sample email and formatted mobile numbers', () => {
+  assert.equal(isStudyContactValid('family-01@example.com', 'email'), true)
+  assert.equal(isStudyContactValid('+1 (202) 555-0101', 'mobile'), true)
+  assert.equal(isStudyContactValid('2025550101', 'mobile'), true)
+  assert.equal(isStudyContactValid('1234', 'mobile'), false)
+  assert.equal(isStudyContactValid('not an email', 'email'), false)
+  assert.equal(studyCode, '123456')
+})

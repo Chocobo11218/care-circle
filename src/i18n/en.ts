@@ -85,6 +85,18 @@ export const en = {
     error: 'Something went wrong. Please try again.', loading: 'Loading…' },
   landing: { getStarted: 'Get started', signIn: 'Log in', alreadyHaveAccount: 'Already have an account?',
     illustration: 'Family members coming together' },
+  studySignup: {
+    title: 'Create account', methodLabel: 'Signup method', email: 'Email', mobile: 'Mobile number',
+    emailHint: 'Use a sample email such as family-01@example.com.',
+    mobileHint: 'Use a sample number such as +1 202 555 0101.',
+    emailError: 'Enter a sample email in the format name@example.com.',
+    mobileError: 'Enter a sample mobile number with 8 to 15 digits.',
+    codeTitle: 'Enter the verification code',
+    codeHint: (code: string) => `For this study, enter ${code}. No email or text message is sent.`,
+    codeError: 'That code does not match. Try the study code shown above.',
+    changeMobile: 'Change mobile number',
+    sessionError: 'Could not start your study session. Check your connection and try again.',
+  },
   emailAuth: {
     signUp: 'Sign up with email', addEmail: 'Add an email address', email: 'Email address',
     send: 'Send code', verify: 'Verify', codeTitle: 'Check your email', code: '6-digit code',

@@ -4,6 +4,7 @@ import Button from '../../components/Button'
 import TopBar from '../../components/TopBar'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
+import { studyMode } from '../../lib/study-mode'
 import { t } from '../../i18n/en'
 
 export default function Profile() {
@@ -30,7 +31,7 @@ export default function Profile() {
 
   return <>
     <TopBar title={t.profile.title} onBack={() => { if (!pending.current) navigate('/family', { replace: true }) }} />
-    {isAnonymous && <Link to="/create-account" className="mb-3 flex min-h-14 items-center justify-center underline">{t.emailAuth.addEmail}</Link>}
+    {isAnonymous && !studyMode && <Link to="/create-account" className="mb-3 flex min-h-14 items-center justify-center underline">{t.emailAuth.addEmail}</Link>}
     <Button type="button" variant="secondary" className="family-pill" disabled={busy} onClick={() => void logOut()}>
       {busy ? t.profile.loggingOut : t.profile.logOut}
     </Button>

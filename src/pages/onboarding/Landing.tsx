@@ -3,6 +3,7 @@ import Button from '../../components/Button'
 import PageShell from '../../components/PageShell'
 import { useSession } from '../../hooks/useSession'
 import { homePath, readLocal } from '../../lib/onboarding'
+import { studyMode } from '../../lib/study-mode'
 import { t } from '../../i18n/en'
 import familyIllustration from '../../assets/family-hug.svg'
 
@@ -18,10 +19,10 @@ export default function Landing() {
     </div>
     <footer className="bottom-actions">
       <Button className="rounded-full" onClick={() => navigate('/select-role')}>{t.landing.getStarted}</Button>
-      <p className="flex flex-wrap items-center justify-center gap-x-1 text-center">
+      {!studyMode && <p className="flex flex-wrap items-center justify-center gap-x-1 text-center">
         {t.landing.alreadyHaveAccount}
         <Link to="/log-in" className="inline-flex min-h-14 min-w-14 items-center justify-center underline">{t.landing.signIn}</Link>
-      </p>
+      </p>}
     </footer>
   </div></PageShell>
 }

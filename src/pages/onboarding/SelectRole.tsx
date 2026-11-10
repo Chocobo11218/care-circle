@@ -3,13 +3,14 @@ import ChoiceCard from '../../components/ChoiceCard'
 import OnboardingIcon from '../../components/OnboardingIcon'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { useDraft } from '../../hooks/useDraft'
+import { studyMode } from '../../lib/study-mode'
 import { t } from '../../i18n/en'
 import type { Role } from '../../types'
 
 export default function SelectRole() {
   const { update } = useDraft()
   const navigate = useNavigate()
-  function choose(role: Role) { update({ role }); navigate(role === 'family' ? '/create-account' : '/name') }
+  function choose(role: Role) { update({ role }); navigate(studyMode || role === 'family' ? '/create-account' : '/name') }
   return <OnboardingLayout title={t.selectRole.title} back={false}>
     <div className="choice-stack">
       <ChoiceCard title={t.selectRole.family} description={t.selectRole.familyDescription} icon={<OnboardingIcon kind="family" />} onClick={() => choose('family')} />

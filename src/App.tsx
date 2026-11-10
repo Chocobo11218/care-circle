@@ -4,6 +4,8 @@ import { TaskDraftProvider } from './lib/task-draft'
 import { DraftProvider } from './lib/draft'
 import OnboardingGuard from './components/OnboardingGuard'
 import Landing from './pages/onboarding/Landing'
+import { studyMode } from './lib/study-mode'
+import StudySignup from './pages/onboarding/StudySignup'
 import EmailAuth from './pages/onboarding/EmailAuth'
 import SelectRole from './pages/onboarding/SelectRole'
 import Name from './pages/onboarding/Name'
@@ -34,8 +36,8 @@ import ElderlyHome from './pages/elderly/ElderlyHome'
 export default function App() {
   return <BrowserRouter><SessionProvider><DraftProvider><TaskDraftProvider><Routes>
     <Route path="/" element={<Landing />} />
-    <Route path="/create-account" element={<OnboardingGuard><EmailAuth key="signup" mode="signup" /></OnboardingGuard>} />
-    <Route path="/log-in" element={<OnboardingGuard><EmailAuth key="login" mode="login" /></OnboardingGuard>} />
+    <Route path="/create-account" element={<OnboardingGuard>{studyMode ? <StudySignup /> : <EmailAuth key="signup" mode="signup" />}</OnboardingGuard>} />
+    <Route path="/log-in" element={<OnboardingGuard>{studyMode ? <Navigate to="/" replace /> : <EmailAuth key="login" mode="login" />}</OnboardingGuard>} />
     <Route path="/select-role" element={<OnboardingGuard><SelectRole /></OnboardingGuard>} />
     <Route path="/name" element={<OnboardingGuard step="name"><Name /></OnboardingGuard>} />
     <Route path="/birthday" element={<OnboardingGuard step="birthday"><Birthday /></OnboardingGuard>} />
