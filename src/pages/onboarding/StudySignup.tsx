@@ -3,7 +3,6 @@ import { Navigate, useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import OnboardingLayout from '../../components/OnboardingLayout'
-import { useDraft } from '../../hooks/useDraft'
 import { useSession } from '../../hooks/useSession'
 import { sanitizeOtp } from '../../lib/email-auth'
 import { homePath } from '../../lib/onboarding'
@@ -12,7 +11,6 @@ import { isStudyContactValid, studyCode, type StudyContactMethod } from '../../l
 import { t } from '../../i18n/en'
 
 export default function StudySignup() {
-  const { draft } = useDraft()
   const { me, ensureSignedIn } = useSession()
   const navigate = useNavigate()
   const pending = useRef(false)
@@ -25,7 +23,6 @@ export default function StudySignup() {
   const copy = t.studySignup
 
   if (me) return <Navigate to={homePath(me.role)} replace />
-  if (!draft.role) return <Navigate to="/select-role" replace />
 
   function chooseMethod(next: StudyContactMethod) {
     if (method === next) return
@@ -64,7 +61,7 @@ export default function StudySignup() {
       const userId = await ensureSignedIn()
       markStudySignupVerified(userId)
       setContact('')
-      navigate('/name', { replace: true })
+      navigate('/select-role', { replace: true })
     } catch {
       setError(copy.sessionError)
     } finally {

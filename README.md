@@ -78,6 +78,6 @@ export default defineConfig([
 
 Use a dedicated Vercel study preview and a separate Supabase test project with disposable data and anonymous sign-ins enabled. Set `VITE_STUDY_SIGNUP=true` for that preview only and redeploy. For local testing, set it in your local Vite environment and restart Vite.
 
-Family and older-adult participants can pick Email or Mobile number, enter a sample value, and verify with `123456`. The sample value stays in the current form and is never used for authentication or sent to Supabase. The study code only continues anonymous onboarding. Returning login by sample contact is unavailable. Use the same browser without logging out to reopen an existing study circle.
+Family and older-adult participants can pick Email or Mobile number, enter a sample value, and verify with `123456` before choosing their role. The sample value stays in the current form and is never used for authentication or sent to Supabase. The study code only continues anonymous onboarding. Returning login by sample contact is unavailable. Use the same browser without logging out to reopen an existing study circle.
 
 With the flag unset, the regular email auth flow remains available.

@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import PageShell from '../../components/PageShell'
@@ -10,6 +11,7 @@ import familyIllustration from '../../assets/family-hug.svg'
 export default function Landing() {
   const { loading, me, circle } = useSession()
   const navigate = useNavigate()
+  const [showSignInStatus, setShowSignInStatus] = useState(false)
   if (loading) return null
   if (readLocal('carecircle_onboarded') === 'true' && me && circle) return <Navigate to={homePath(me.role)} replace />
   return <PageShell><div className="onboarding-page landing-page">
@@ -18,11 +20,14 @@ export default function Landing() {
       <img src={familyIllustration} alt={t.landing.illustration} className="landing-illustration max-w-full" />
     </div>
     <footer className="bottom-actions">
-      <Button className="rounded-full" onClick={() => navigate('/select-role')}>{t.landing.getStarted}</Button>
-      {!studyMode && <p className="flex flex-wrap items-center justify-center gap-x-1 text-center">
+      <Button className="rounded-full" onClick={() => navigate(studyMode ? '/create-account' : '/select-role')}>{t.landing.getStarted}</Button>
+      <p className="flex flex-wrap items-center justify-center gap-x-1 text-center">
         {t.landing.alreadyHaveAccount}
-        <Link to="/log-in" className="inline-flex min-h-14 min-w-14 items-center justify-center underline">{t.landing.signIn}</Link>
-      </p>}
+        {studyMode
+          ? <button type="button" className="min-h-14 min-w-14 underline" onClick={() => setShowSignInStatus(true)}>{t.studySignup.signIn}</button>
+          : <Link to="/log-in" className="inline-flex min-h-14 min-w-14 items-center justify-center underline">{t.landing.signIn}</Link>}
+      </p>
+      {showSignInStatus && <p role="status" className="text-center">{t.studySignup.signInUnavailable}</p>}
     </footer>
   </div></PageShell>
 }

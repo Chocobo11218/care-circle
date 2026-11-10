@@ -86,6 +86,7 @@ export const en = {
   landing: { getStarted: 'Get started', signIn: 'Log in', alreadyHaveAccount: 'Already have an account?',
     illustration: 'Family members coming together' },
   studySignup: {
+    signIn: 'Sign in', signInUnavailable: 'Sign in is unavailable in this study.',
     title: 'Create account', methodLabel: 'Signup method', email: 'Email', mobile: 'Mobile number',
     emailHint: 'Use a sample email such as family-01@example.com.',
     mobileHint: 'Use a sample number such as +1 202 555 0101.',
