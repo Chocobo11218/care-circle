@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import TopBar from '../../components/TopBar'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
@@ -7,7 +7,7 @@ import { useSession } from '../../hooks/useSession'
 import { t } from '../../i18n/en'
 
 export default function Profile() {
-  const { resetDevice } = useSession()
+  const { resetDevice, isAnonymous } = useSession()
   const navigate = useNavigate()
   const pending = useRef(false)
   const [busy, setBusy] = useState(false)
@@ -30,6 +30,7 @@ export default function Profile() {
 
   return <>
     <TopBar title={t.profile.title} onBack={() => { if (!pending.current) navigate('/family', { replace: true }) }} />
+    {isAnonymous && <Link to="/create-account" className="mb-3 flex min-h-14 items-center justify-center underline">{t.emailAuth.addEmail}</Link>}
     <Button type="button" variant="secondary" className="family-pill" disabled={busy} onClick={() => void logOut()}>
       {busy ? t.profile.loggingOut : t.profile.logOut}
     </Button>
