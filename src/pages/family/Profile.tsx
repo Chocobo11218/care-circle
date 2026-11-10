@@ -6,7 +6,7 @@ import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { t } from '../../i18n/en'
 
-export default function Profile({ home = '/family' }: { home?: '/family' | '/elderly' }) {
+export default function Profile() {
   const { resetDevice } = useSession()
   const navigate = useNavigate()
   const pending = useRef(false)
@@ -29,7 +29,7 @@ export default function Profile({ home = '/family' }: { home?: '/family' | '/eld
   }
 
   return <>
-    <TopBar title={t.profile.title} onBack={() => { if (!pending.current) navigate(home, { replace: true }) }} />
+    <TopBar title={t.profile.title} onBack={() => { if (!pending.current) navigate('/family', { replace: true }) }} />
     <Button type="button" variant="secondary" className="family-pill" disabled={busy} onClick={() => void logOut()}>
       {busy ? t.profile.loggingOut : t.profile.logOut}
     </Button>

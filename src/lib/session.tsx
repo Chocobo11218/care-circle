@@ -11,7 +11,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const [circle, setCircle] = useState<Circle | null>(null)
 
   const loadMembership = useCallback(async (uid: string) => {
-    const { data: member, error: memberError } = await supabase
+    const { data: member } = await supabase
       .from('members')
       .select('*')
       .eq('user_id', uid)
@@ -19,49 +19,48 @@ export function SessionProvider({ children }: { children: ReactNode }) {
       .limit(1)
       .maybeSingle()
 
-    if (memberError) throw memberError
     if (!member) {
       setMe(null)
       setCircle(null)
-      return null
+      return
     }
-    const { data: c, error: circleError } = await supabase
+    const { data: c } = await supabase
       .from('circles')
       .select('*')
       .eq('id', member.circle_id)
       .single()
-    if (circleError) throw circleError
     setMe(member as Member)
     setCircle((c as Circle) ?? null)
-    return member as Member
   }, [])
 
   useEffect(() => {
-    async function initialize() {
-      try {
-        const { data } = await supabase.auth.getSession()
-        const uid = data.session?.user.id ?? null
-        setUserId(uid)
-        if (uid) await loadMembership(uid)
-      } catch {
-        setMe(null)
-        setCircle(null)
-      } finally {
-        setLoading(false)
-      }
-    }
-    void initialize()
+    supabase.auth.getSession().then(async ({ data }) => {
+      const uid = data.session?.user.id ?? null
+      setUserId(uid)
+      if (uid) await loadMembership(uid)
+      setLoading(false)
+    })
   }, [loadMembership])
 
+  const ensureSignedIn = useCallback(async () => {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) return data.session.user.id
+    const { data: anon, error } = await supabase.auth.signInAnonymously()
+    if (error || !anon.user) throw error ?? new Error('Sign-in failed')
+    setUserId(anon.user.id)
+    return anon.user.id
+  }, [])
+
   const refresh = useCallback(async () => {
-    const { data, error } = await supabase.auth.getSession()
-    if (error) throw error
-    const uid = data.session?.user.id ?? null
-    setUserId(uid)
-    setMe(null)
-    setCircle(null)
-    return uid ? loadMembership(uid) : null
-  }, [loadMembership])
+    if (userId) await loadMembership(userId)
+    else {
+      const { data } = await supabase.auth.getSession()
+      if (data.session) {
+        setUserId(data.session.user.id)
+        await loadMembership(data.session.user.id)
+      }
+    }
+  }, [userId, loadMembership])
 
   const resetDevice = useCallback(async () => {
     const { error } = await supabase.auth.signOut({ scope: 'local' })
@@ -74,7 +73,7 @@ export function SessionProvider({ children }: { children: ReactNode }) {
 
   return (
     <SessionContext.Provider
-      value={{ loading, userId, me, circle, refresh, resetDevice }}
+      value={{ loading, userId, me, circle, ensureSignedIn, refresh, resetDevice }}
     >
       {children}
     </SessionContext.Provider>
