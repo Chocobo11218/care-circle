@@ -83,7 +83,7 @@ export const en = {
     error: 'Unable to share or copy the code. Please try again.' },
   common: { back: 'Back', continue: 'Continue', submit: 'Submit', working: 'Working…',
     error: 'Something went wrong. Please try again.', loading: 'Loading…' },
-  landing: { getStarted: 'Get started', signIn: 'Log in', alreadyHaveAccount: 'Already have an account?',
+  landing: { signInUnavailable: 'Sign in is not available in this study.', getStarted: 'Get started', signIn: 'Log in', alreadyHaveAccount: 'Already have an account?',
     illustration: 'Family members coming together' },
   studySignup: {
     title: 'Create account', methodLabel: 'Signup method', email: 'Email', mobile: 'Mobile number',

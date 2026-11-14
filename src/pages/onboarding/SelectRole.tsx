@@ -10,7 +10,7 @@ import type { Role } from '../../types'
 export default function SelectRole() {
   const { update } = useDraft()
   const navigate = useNavigate()
-  function choose(role: Role) { update({ role }); navigate(studyMode || role === 'family' ? '/create-account' : '/name') }
+  function choose(role: Role) { update({ role }); navigate(!studyMode && role === 'family' ? '/create-account' : '/name') }
   return <OnboardingLayout title={t.selectRole.title} back={false}>
     <div className="choice-stack">
       <ChoiceCard title={t.selectRole.family} description={t.selectRole.familyDescription} icon={<OnboardingIcon kind="family" />} onClick={() => choose('family')} />

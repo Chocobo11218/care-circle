@@ -89,7 +89,7 @@ export const th = {
     error: 'แชร์หรือคัดลอกรหัสไม่สำเร็จ โปรดลองอีกครั้ง' },
   common: { back: 'กลับ', continue: 'ถัดไป', submit: 'ยืนยัน', working: 'กำลังดำเนินการ…',
     error: 'เกิดข้อผิดพลาด โปรดลองอีกครั้ง', loading: 'กำลังโหลด…' },
-  landing: { getStarted: 'เริ่มต้นใช้งาน', signIn: 'เข้าสู่ระบบ', alreadyHaveAccount: 'มีบัญชีอยู่แล้ว?',
+  landing: { signInUnavailable: 'การศึกษานี้ยังไม่รองรับการเข้าสู่ระบบ', getStarted: 'เริ่มต้นใช้งาน', signIn: 'เข้าสู่ระบบ', alreadyHaveAccount: 'มีบัญชีอยู่แล้ว?',
     illustration: 'สมาชิกในครอบครัวอยู่พร้อมหน้า' },
   studySignup: {
     title: 'สร้างบัญชี', methodLabel: 'วิธีสมัครใช้งาน', email: 'อีเมล', mobile: 'หมายเลขโทรศัพท์มือถือ',
