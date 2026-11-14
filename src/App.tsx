@@ -38,7 +38,7 @@ export default function App() {
     <Route path="/" element={<Landing />} />
     <Route path="/create-account" element={<OnboardingGuard>{studyMode ? <StudySignup /> : <EmailAuth key="signup" mode="signup" />}</OnboardingGuard>} />
     <Route path="/log-in" element={<OnboardingGuard>{studyMode ? <Navigate to="/" replace /> : <EmailAuth key="login" mode="login" />}</OnboardingGuard>} />
-    <Route path="/select-role" element={<OnboardingGuard><SelectRole /></OnboardingGuard>} />
+    <Route path="/select-role" element={<OnboardingGuard step="role"><SelectRole /></OnboardingGuard>} />
     <Route path="/name" element={<OnboardingGuard step="name"><Name /></OnboardingGuard>} />
     <Route path="/birthday" element={<OnboardingGuard step="birthday"><Birthday /></OnboardingGuard>} />
     <Route path="/get-started" element={<OnboardingGuard step="circle"><GetStarted /></OnboardingGuard>} />

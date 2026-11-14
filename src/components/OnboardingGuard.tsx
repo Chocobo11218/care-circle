@@ -7,7 +7,7 @@ import { hasStudySignupVerification, studyMode } from '../lib/study-mode'
 import type { Role } from '../types'
 
 export default function OnboardingGuard({ step, role, children }: {
-  step?: 'name' | 'birthday' | 'circle' | 'membership'
+  step?: 'role' | 'name' | 'birthday' | 'circle' | 'membership'
   role?: Role
   children: ReactNode
 }) {
@@ -16,13 +16,13 @@ export default function OnboardingGuard({ step, role, children }: {
   if (loading) return null
   if (role && !userId) return <Navigate to="/" replace />
   if (role && me && me.role !== role) return <Navigate to={homePath(me.role)} replace />
-  if (step && step !== 'membership' && !me && draft.role) {
+  if (step && step !== 'membership' && !me) {
     const needsSignup = studyMode
       ? !hasStudySignupVerification(userId)
-      : draft.role === 'family' && (!userId || isAnonymous)
+      : step !== 'role' && draft.role === 'family' && (!userId || isAnonymous)
     if (needsSignup) return <Navigate to="/create-account" replace />
   }
   const target = step === 'membership' ? (!me || !circle ? '/get-started' : null)
-    : step ? missingStep(draft, step) : null
+    : step && step !== 'role' ? missingStep(draft, step) : null
   return target ? <Navigate to={target} replace /> : children
 }
