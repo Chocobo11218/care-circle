@@ -3,7 +3,7 @@ import Button from '../../components/Button'
 import Input from '../../components/Input'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { useCircleSubmit } from '../../hooks/useCircleSubmit'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function JoinCircle() {
   const [value, setValue] = useState('')

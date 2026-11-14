@@ -7,7 +7,7 @@ import { useEmailAuth, type EmailAuthMode } from '../../hooks/useEmailAuth'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { homePath } from '../../lib/onboarding'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function EmailAuth({ mode }: { mode: EmailAuthMode }) {
   const { me, isAnonymous, userId } = useSession()

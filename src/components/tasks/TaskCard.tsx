@@ -3,7 +3,7 @@ import TaskFacts from './TaskFacts'
 import TaskAssignment from './TaskAssignment'
 import { needsAttention } from '../../lib/tasks'
 import { formatTaskDateLabel } from '../../lib/date'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import type { Task } from '../../types'
 
 export default function TaskCard({ task, now }: { task: Task; now: Date }) {

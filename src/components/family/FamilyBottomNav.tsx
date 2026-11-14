@@ -1,6 +1,6 @@
 import { Link, NavLink } from 'react-router-dom'
 import FamilyNavIcon from './FamilyNavIcon'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function FamilyBottomNav({ base = '/family', detailTab }: {
   base?: '/family' | '/elderly'

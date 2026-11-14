@@ -4,7 +4,7 @@ import PageShell from '../../components/PageShell'
 import { useSession } from '../../hooks/useSession'
 import { homePath, readLocal } from '../../lib/onboarding'
 import { studyMode } from '../../lib/study-mode'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import familyIllustration from '../../assets/family-hug.svg'
 
 export default function Landing() {

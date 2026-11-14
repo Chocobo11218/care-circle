@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import Button from '../Button'
 import PlusIcon from './PlusIcon'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import calendarIllustration from '../../assets/calendar.png'
 
 export default function ActivityEmptyState({ elderly = false }: { elderly?: boolean }) {

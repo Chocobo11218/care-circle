@@ -5,7 +5,7 @@ import TopBar from '../../components/TopBar'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { studyMode } from '../../lib/study-mode'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function Profile() {
   const { resetDevice, isAnonymous } = useSession()

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { useSession } from './useSession'
 import { normalizeEmail, resendCooldownMs, resendSeconds, sanitizeOtp } from '../lib/email-auth'
 import { supabase } from '../lib/supabase'
-import { t } from '../i18n/en'
+import { t } from '../i18n/index'
 import type { Member } from '../types'
 
 export type EmailAuthMode = 'signup' | 'login'

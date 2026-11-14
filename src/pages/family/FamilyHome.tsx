@@ -14,7 +14,7 @@ import { useLocalClock } from '../../hooks/useLocalClock'
 import { localDate, localGreeting } from '../../lib/family'
 import { careRecipientIds } from '../../lib/tasks'
 import { splitMembers } from '../../lib/members'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import familyIllustration from '../../assets/family-hug.svg'
 
 export default function FamilyHome() {

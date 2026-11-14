@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom'
 import ChoiceCard from '../../components/ChoiceCard'
 import OnboardingIcon from '../../components/OnboardingIcon'
 import OnboardingLayout from '../../components/OnboardingLayout'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function GetStarted() {
   const navigate = useNavigate()

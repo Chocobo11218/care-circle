@@ -140,5 +140,3 @@ export const en = {
     continue: 'Allow & continue', error: 'Unable to save your choices. Please try again.' },
   home: { family: 'Family Home', elderly: 'Elderly Home', firstName: 'First name', circle: 'Circle' },
 } as const
-
-export const t = en

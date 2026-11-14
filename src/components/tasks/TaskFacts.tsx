@@ -5,7 +5,7 @@ import { useFamilyMembers } from '../../hooks/useFamilyMembers'
 import { useSession } from '../../hooks/useSession'
 import { careRecipientIds } from '../../lib/tasks'
 import { formatTaskRow } from '../../lib/date'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import type { Task } from '../../types'
 
 export default function TaskFacts({ task, now, creator = false, hideEmpty = false, emptyRecipient }: { task: Task; now: Date; creator?: boolean; hideEmpty?: boolean; emptyRecipient?: ReactNode }) {

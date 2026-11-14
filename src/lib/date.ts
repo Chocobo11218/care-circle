@@ -1,4 +1,4 @@
-import { t } from '../i18n/en'
+import { t, locale } from '../i18n/index'
 
 export function formatBirthday(value: string): string {
   const digits = value.replace(/\D/g, '').slice(0, 8)
@@ -7,7 +7,9 @@ export function formatBirthday(value: string): string {
 
 export function parseBirthday(value: string, today = new Date()): Date | null {
   if (!/^\d{2}\/\d{2}\/\d{4}$/.test(value)) return null
-  const [day, month, year] = value.split('/').map(Number)
+  const [day, month, inputYear] = value.split('/').map(Number)
+  // Buddhist years from 2443 correspond to the supported Gregorian range.
+  const year = inputYear >= 2443 ? inputYear - 543 : inputYear
   if (year < 1900) return null
   const date = new Date(year, month - 1, day)
   if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) return null
@@ -20,13 +22,13 @@ export function isValidBirthday(value: string): boolean {
 }
 
 export function birthdayToISO(value: string): string {
-  if (!isValidBirthday(value)) throw new Error('Invalid birthday')
-  const [day, month, year] = value.split('/')
-  return `${year}-${month}-${day}`
+  const date = parseBirthday(value)
+  if (!date) throw new Error('Invalid birthday')
+  return localISODate(date)
 }
 
 
-export const USE_BUDDHIST_YEAR = false
+export const USE_BUDDHIST_YEAR = true
 
 export function localISODate(now = new Date()): string {
   return `${String(now.getFullYear()).padStart(4, '0')}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`
@@ -44,13 +46,13 @@ export function parseTaskDate(value: string): Date | null {
 
 export function formatShortDate(value: string): string {
   const date = parseTaskDate(value)
-  return date ? new Intl.DateTimeFormat('en-GB', { weekday: 'short', day: 'numeric', month: 'short' }).format(date).replace(/^(\S+) /, '$1, ') : ''
+  return date ? new Intl.DateTimeFormat(locale, { weekday: 'short', day: 'numeric', month: 'short' }).format(date) : ''
 }
 
 export function formatTaskDateLabel(value: string | null, now = new Date(), buddhistYear = USE_BUDDHIST_YEAR): string {
   const date = value ? parseTaskDate(value) : null
   if (!date) return t.taskDates.noDate
-  const text = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long' }).format(date)
+  const text = new Intl.DateTimeFormat(locale, { day: 'numeric', month: 'long' }).format(date)
   return date.getFullYear() === now.getFullYear() ? text : `${text} ${date.getFullYear() + (buddhistYear ? 543 : 0)}`
 }
 
@@ -70,13 +72,13 @@ export function formatHomeDate(now: Date): string {
 
 export function formatJoinedTime(value: string): string | null {
   const date = new Date(value)
-  return Number.isNaN(date.getTime()) ? null : new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)
+  return Number.isNaN(date.getTime()) ? null : new Intl.DateTimeFormat(locale, { hour: '2-digit', minute: '2-digit', hour12: false }).format(date)
 }
 
 export function formatElderTaskDate(value: string | null): string {
   const date = value ? parseTaskDate(value) : null
   if (!date) return t.elderly.unavailable
-  return new Intl.DateTimeFormat(USE_BUDDHIST_YEAR ? 'en-GB-u-ca-buddhist' : 'en-GB', {
+  return new Intl.DateTimeFormat(`${locale}-u-ca-${USE_BUDDHIST_YEAR ? 'buddhist' : 'gregory'}`, {
     day: 'numeric', month: 'long', year: 'numeric',
   }).format(date)
 }

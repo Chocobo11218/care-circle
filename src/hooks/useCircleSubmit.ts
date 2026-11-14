@@ -5,7 +5,7 @@ import { useSession } from './useSession'
 import { supabase } from '../lib/supabase'
 import { birthdayToISO } from '../lib/date'
 import { missingStep } from '../lib/onboarding'
-import { t } from '../i18n/en'
+import { t } from '../i18n/index'
 
 export function useCircleSubmit(mode: 'create' | 'join') {
   const { draft } = useDraft()

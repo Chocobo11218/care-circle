@@ -5,7 +5,7 @@ import { useElderTasks } from '../../hooks/useElderTasks'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useTaskCompanion } from '../../hooks/useTaskCompanion'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import { CompanionPill, ElderContactCard, ElderTaskFacts, PlaceholderButton } from './ElderTaskContent'
 
 export default function ElderlyTaskDetails() {

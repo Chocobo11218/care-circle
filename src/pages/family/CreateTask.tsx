@@ -19,7 +19,7 @@ import { splitMembers } from '../../lib/members'
 import { localISODate } from '../../lib/date'
 import { careRecipientIds, selectedCareRecipients, taskFields, validateTaskDraft, type TaskErrors } from '../../lib/tasks'
 import type { Task } from '../../types'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function CreateTask({ editing }: { editing?: Task }) {
   const { me } = useSession()
@@ -94,9 +94,9 @@ export default function CreateTask({ editing }: { editing?: Task }) {
       <section className="form-stack"><h2>{t.taskCreate.details}</h2>
         <Input id="task-title" required label={t.taskCreate.name} placeholder={t.taskCreate.namePlaceholder} value={draft.title} error={errors.title} disabled={busy} onChange={event => update({ title: event.target.value })} />
         <div className="task-location-input"><Input id="task-location" label={t.taskCreate.location} placeholder={t.taskCreate.locationPlaceholder} value={draft.location} disabled={busy} onChange={event => update({ location: event.target.value })} /><span aria-hidden="true"><TaskIcon kind="search" /></span></div>
-        <Input id="task-date" required label={t.taskCreate.date} type="date" lang="en-GB" min={localISODate(now)} value={draft.date} error={errors.date} disabled={busy} onChange={event => update({ date: event.target.value })} />
-        <div className="task-time-fields"><Input id="task-start" label={t.taskCreate.start} type="time" lang="en-GB" step={60} value={draft.startTime} disabled={busy} onChange={event => update({ startTime: event.target.value })} />
-          <Input id="task-end" label={t.taskCreate.end} type="time" lang="en-GB" step={60} value={draft.endTime} error={errors.endTime} disabled={busy} onChange={event => update({ endTime: event.target.value })} /></div>
+        <Input id="task-date" required label={t.taskCreate.date} type="date" lang="th-TH" min={localISODate(now)} value={draft.date} error={errors.date} disabled={busy} onChange={event => update({ date: event.target.value })} />
+        <div className="task-time-fields"><Input id="task-start" label={t.taskCreate.start} type="time" lang="th-TH" step={60} value={draft.startTime} disabled={busy} onChange={event => update({ startTime: event.target.value })} />
+          <Input id="task-end" label={t.taskCreate.end} type="time" lang="th-TH" step={60} value={draft.endTime} error={errors.endTime} disabled={busy} onChange={event => update({ endTime: event.target.value })} /></div>
       </section>
       <section><label htmlFor="task-description" className="task-section-label">{t.taskCreate.description}</label><textarea id="task-description" className="task-textarea" placeholder={t.taskCreate.descriptionPlaceholder} value={draft.description} disabled={busy} onChange={event => update({ description: event.target.value })} /></section>
       <section><label htmlFor="task-note" className="task-section-label">{t.taskCreate.notes}</label><textarea id="task-note" className="task-textarea task-note-input" placeholder={t.taskCreate.notesPlaceholder} value={draft.note} disabled={busy} onChange={event => update({ note: event.target.value })} /></section>

@@ -4,7 +4,7 @@ import TaskFeedStatus from '../../components/tasks/TaskFeedStatus'
 import { useElderTasks } from '../../hooks/useElderTasks'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import { ElderTaskCard } from './ElderTaskContent'
 
 export default function ElderlyTasks() {

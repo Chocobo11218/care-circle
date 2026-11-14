@@ -1,4 +1,4 @@
-import { t } from '../i18n/en'
+import { t } from '../i18n/index'
 import { formatHomeDate, formatJoinedTime } from './date'
 
 export function memberInitial(name: string) {

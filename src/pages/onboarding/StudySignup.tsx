@@ -9,7 +9,7 @@ import { sanitizeOtp } from '../../lib/email-auth'
 import { homePath } from '../../lib/onboarding'
 import { markStudySignupVerified } from '../../lib/study-mode'
 import { isStudyContactValid, studyCode, type StudyContactMethod } from '../../lib/study-signup'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function StudySignup() {
   const { draft } = useDraft()

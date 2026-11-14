@@ -64,10 +64,11 @@ test('Send request is disabled until a candidate is selected and while sending o
     '../../components/tasks/TaskFacts': empty,
     '../../components/tasks/TaskIcon': empty,
     '../../hooks/useLocalClock': { useLocalClock: () => new Date() },
-    '../../i18n/en': await load('../src/i18n/en.ts'),
+    '../../i18n/index': { t: (await load('../src/i18n/th.ts')).th },
+    '../../i18n/member-copy': await load('../src/i18n/member-copy.ts'),
   })
   const selected = { id: 'fay', first_name: 'Fay' }
-  function sendButton(props, label = 'Send request') {
+  function sendButton(props, label = 'ส่งคำขอ') {
     const html = renderToStaticMarkup(createElement(Picker, {
       task: { title: 'Appointment' }, candidates: [], ...props,
     }))
@@ -76,12 +77,12 @@ test('Send request is disabled until a candidate is selected and while sending o
     return button[1]
   }
 
-  assert.match(sendButton({ isDraft: true }, 'Confirm'), /\bdisabled=""/)
-  assert.doesNotMatch(sendButton({ isDraft: true, selected }, 'Confirm'), /\bdisabled=""/)
+  assert.match(sendButton({ isDraft: true }, 'ยืนยัน'), /\bdisabled=""/)
+  assert.doesNotMatch(sendButton({ isDraft: true, selected }, 'ยืนยัน'), /\bdisabled=""/)
   assert.match(sendButton({ isDraft: false }), /\bdisabled=""/)
   assert.doesNotMatch(sendButton({ selected }), /\bdisabled=""/)
   assert.match(sendButton({ selected, assigned: true }), /\bdisabled=""/)
-  assert.match(sendButton({ selected, busy: true }, 'Sending…'), /\bdisabled=""/)
+  assert.match(sendButton({ selected, busy: true }, 'กำลังส่ง…'), /\bdisabled=""/)
 })
 
 test('linking writes only elder_id and preserves a concurrent link', async () => {
