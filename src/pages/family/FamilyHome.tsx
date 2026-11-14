@@ -44,7 +44,7 @@ export default function FamilyHome() {
     {!loading && !taskFeed.loading && !(taskFeed.error && !taskFeed.tasks.length) && !(error && !members.length) && (hasOthers || taskFeed.tasks.length > 0 ? <>
       {realElders.length > 0 && <section className="family-summary" aria-label={t.familyHome.atHome(realElders.map(member => member.first_name))}>
         <div className="family-avatar-stack">{realElders.map(member => <Avatar key={member.id} name={member.first_name} />)}</div>
-        <div className="min-w-0"><h2>{t.familyHome.atHome(realElders.map(member => member.first_name))}</h2><p>{t.familyHome.noJourney}</p></div>
+        <div className="min-w-0"><h3>{t.familyHome.atHome(realElders.map(member => member.first_name))}</h3><p>{t.familyHome.noJourney}</p></div>
       </section>}
       {latestElder && firstUnlinked && <Link className="task-joined-banner" to={`/family/tasks/${firstUnlinked.id}/choose-elder`} state={{ fromHome: true }}>
         <span>{t.chooseElder.joined(latestElder.first_name)}</span><span aria-hidden="true">›</span>
@@ -54,7 +54,7 @@ export default function FamilyHome() {
       {!taskFeed.loading && taskFeed.tasks.length > 0 && <Button className="family-pill family-action-button mt-5" onClick={() => navigate('/family/tasks/new')}><PlusIcon />{t.familyTasks.add}</Button>}
     </> : <section className="family-empty-state family-circle-empty">
       <div className="family-illustration-slot"><img src={familyIllustration} alt={t.familyHome.illustration} className="family-illustration" /></div>
-      <h2>{t.familyHome.emptyTitle}</h2>
+      <h3>{t.familyHome.emptyTitle}</h3>
       <p>{t.familyHome.emptyDescription}</p>
       <Button className="family-pill family-action-button" onClick={() => navigate('/family/add-member')}><PlusIcon />{t.familyHome.invite}</Button>
     </section>)}

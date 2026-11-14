@@ -31,7 +31,7 @@ export default function ElderlyHome() {
     }
     if (!members.members.some(member => member.role === 'family' && !member.is_mock)) {
       return <section className="family-empty-state">
-        <h1 className="text-2xl font-semibold">{t.elderly.inviteTitle}</h1>
+        <h1 className="text-h1 font-semibold">{t.elderly.inviteTitle}</h1>
         <ShareInviteButton label={t.elderly.share} primary />
       </section>
     }
@@ -45,7 +45,7 @@ export default function ElderlyHome() {
       <Avatar name={me.first_name} />
     </header>
     <section className="elder-section">
-      <h2>{t.elderly.menu}</h2>
+      <h3>{t.elderly.menu}</h3>
       <div className="grid grid-cols-2 gap-3">
         <Link className="elder-menu-tile bg-support-3" to="/elderly/members">
           <strong>{t.elderly.family}</strong><span>{t.elderly.familyHint}</span><FamilyNavIcon kind="family" />
@@ -56,12 +56,12 @@ export default function ElderlyHome() {
       </div>
     </section>
     <section className="elder-section">
-      <h2>{t.elderly.next}</h2>
+      <h3>{t.elderly.next}</h3>
       <TaskFeedStatus />
       {next ? <ElderTaskCard task={next} from="home" /> : !loading && !error && <ActivityEmptyState elderly />}
     </section>
     {companion && <section className="elder-section">
-      <h2>{t.elderly.quickCall}</h2>
+      <h3>{t.elderly.quickCall}</h3>
       <ElderContactCard companion={companion} />
     </section>}
   </>

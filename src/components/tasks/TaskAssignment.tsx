@@ -25,7 +25,7 @@ export default function TaskAssignment({ task }: { task: Task }) {
       <div className="assignment-suggestion">
         <div className="assignment-person">
           <Avatar name={suggested.first_name} small />
-          <div className="min-w-0"><p className="font-semibold">{suggested.first_name}</p>{suggested.availability && <p className="truncate" title={memberCopy(suggested.availability, suggested.is_mock)}>{memberCopy(suggested.availability, suggested.is_mock)}</p>}</div>
+          <div className="min-w-0"><p className="text-body-large font-medium">{suggested.first_name}</p>{suggested.availability && <p className="wrap-anywhere" title={memberCopy(suggested.availability, suggested.is_mock)}>{memberCopy(suggested.availability, suggested.is_mock)}</p>}</div>
           <span className="assignment-badge assignment-badge-suggested"><AssignmentIcon kind="sparkles" />{t.chooseMember.suggested}</span>
         </div>
         <Button type="button" variant="secondary" className="family-pill" disabled={busy} onClick={() => void assign(task, suggested.id)}>{t.chooseMember.request(suggested.first_name)}</Button>

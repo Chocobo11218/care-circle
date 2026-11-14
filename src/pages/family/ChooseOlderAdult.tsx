@@ -47,7 +47,7 @@ export default function ChooseOlderAdult() {
     {task && !needsRecipient && <Link className="task-pill-link" to={destination} replace>{t.chooseElder.alreadyLinked}</Link>}
     {needsRecipient && !members.loading && !(members.error && !members.members.length) &&
       <form className="form-stack" onSubmit={save}>
-        <h2>{t.chooseElder.question}</h2>
+        <h3>{t.chooseElder.question}</h3>
         {elders.length ? <>
           <ElderOptions elders={elders} selected={selected} onSelect={setSelected} label={t.chooseElder.question} disabled={busy} />
           <Button type="submit" variant="secondary" className="family-pill" disabled={!canSave || busy}>{busy ? t.chooseElder.saving : t.chooseElder.save}</Button>

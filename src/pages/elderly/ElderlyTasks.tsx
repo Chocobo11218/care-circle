@@ -15,7 +15,7 @@ export default function ElderlyTasks() {
     <TopBar title={t.familyTasks.title} showBack={false} />
     <TaskFeedStatus />
     <section className="elder-section">
-      {(!loading && (!error || upcoming.length > 0)) && <h2>{t.elderly.upcoming(upcoming.length)}</h2>}
+      {(!loading && (!error || upcoming.length > 0)) && <h3>{t.elderly.upcoming(upcoming.length)}</h3>}
       {upcoming.map(task => <ElderTaskCard key={task.id} task={task} from="tasks" />)}
       {!loading && !error && !upcoming.length && <ActivityEmptyState elderly />}
     </section>

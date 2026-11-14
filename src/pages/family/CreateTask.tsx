@@ -85,13 +85,13 @@ export default function CreateTask({ editing }: { editing?: Task }) {
     <TopBar title={editing ? t.taskEdit.title : t.taskCreate.title}
       onBack={detailsPath ? () => { if (!busy) backToDetails() } : undefined} />
     <form ref={formRef} className="task-create-form" noValidate onSubmit={submit}>
-      <section><h2>{t.taskCreate.who}</h2>
+      <section><h3>{t.taskCreate.who}</h3>
         <MemberFeedStatus loading={loading} error={memberError && !members.length} retry={refetch} />
         {!loading && !(memberError && !members.length) && (members.length ? <CareRecipientOptions members={members} selected={recipientIds} onChange={recipientIds => update({ recipientIds })}
           error={elderError} disabled={busy} /> : <><Input label={t.taskCreate.who} value={t.taskCreate.noElder} disabled /><Link className="task-invite-link" to="/family/add-member">{t.taskCreate.invite}</Link></>)}
         {elderError && <p role="alert" id="task-elder-error" className="task-field-error">{elderError}</p>}
       </section>
-      <section className="form-stack"><h2>{t.taskCreate.details}</h2>
+      <section className="form-stack"><h3>{t.taskCreate.details}</h3>
         <Input id="task-title" required label={t.taskCreate.name} placeholder={t.taskCreate.namePlaceholder} value={draft.title} error={errors.title} disabled={busy} onChange={event => update({ title: event.target.value })} />
         <div className="task-location-input"><Input id="task-location" label={t.taskCreate.location} placeholder={t.taskCreate.locationPlaceholder} value={draft.location} disabled={busy} onChange={event => update({ location: event.target.value })} /><span aria-hidden="true"><TaskIcon kind="search" /></span></div>
         <Input id="task-date" required label={t.taskCreate.date} type="date" lang="th-TH" min={localISODate(now)} value={draft.date} error={errors.date} disabled={busy} onChange={event => update({ date: event.target.value })} />
@@ -101,7 +101,7 @@ export default function CreateTask({ editing }: { editing?: Task }) {
       <section><label htmlFor="task-description" className="task-section-label">{t.taskCreate.description}</label><textarea id="task-description" className="task-textarea" placeholder={t.taskCreate.descriptionPlaceholder} value={draft.description} disabled={busy} onChange={event => update({ description: event.target.value })} /></section>
       <section><label htmlFor="task-note" className="task-section-label">{t.taskCreate.notes}</label><textarea id="task-note" className="task-textarea task-note-input" placeholder={t.taskCreate.notesPlaceholder} value={draft.note} disabled={busy} onChange={event => update({ note: event.target.value })} /></section>
       <section>
-        <h2>{t.taskCreate.responsibility}</h2>
+        <h3>{t.taskCreate.responsibility}</h3>
         <div className="task-responsibility">
           {editing ? <>
             {assigneeId ? <div className="task-assignee"><Avatar name={chosen?.first_name ?? t.taskList.familyMember} small />

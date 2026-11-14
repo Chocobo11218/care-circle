@@ -9,7 +9,7 @@ export default function Input({
   const inputId = id ?? label.toLowerCase().replace(/\s+/g, '-')
   return (
     <div className="w-full">
-      <label htmlFor={inputId} className="mb-2 block font-medium text-btn-secondary">
+      <label htmlFor={inputId} className="mb-2 block text-body font-medium text-btn-secondary">
         {label}
       </label>
       <input
@@ -17,7 +17,7 @@ export default function Input({
         {...props}
         aria-invalid={!!error}
         aria-describedby={error ? `${inputId}-error` : props['aria-describedby']}
-        className={`min-h-14 w-full rounded-xl border bg-surface px-4 text-lg outline-none focus:border-btn-primary focus:ring-2 focus:ring-btn-primary/30 ${
+        className={`min-h-14 w-full rounded-xl border bg-surface px-4 text-body-large outline-none focus:border-btn-primary focus:ring-2 focus:ring-btn-primary/30 ${
           error ? 'border-red-600' : 'border-input-stroke'
         }`}
       />

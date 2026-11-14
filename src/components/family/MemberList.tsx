@@ -11,7 +11,7 @@ export default function MemberList() {
   return <>
     <MemberFeedStatus loading={loading} error={error && !members.length} retry={refetch} />
     {!loading && !(error && !members.length) && <section className="family-members-section">
-      <h2 aria-live="polite">{t.familyMembers.count(members.length)}</h2>
+      <h3 aria-live="polite">{t.familyMembers.count(members.length)}</h3>
       <ul className="family-member-list">{orderedMembers(members).map(member => {
         const time = joinedTime(member.joined_at)
         return <li key={member.id} className="family-member-card">

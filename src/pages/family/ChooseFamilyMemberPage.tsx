@@ -55,7 +55,7 @@ export default function ChooseFamilyMemberPage({ task, candidates, currentMember
     <section className="assignment-list">
       <div className="assignment-heading">
         <AssignmentIcon kind="sparkles" />
-        <h2>{strings.who}</h2>
+        <h3>{strings.who}</h3>
         <button type="button" className="assignment-info" aria-label={strings.info} onClick={() => info.current?.showModal()}><AssignmentIcon kind="info" /></button>
       </div>
       <dialog ref={info} className="assignment-sheet" aria-labelledby="assignment-info-text">
@@ -95,7 +95,7 @@ export default function ChooseFamilyMemberPage({ task, candidates, currentMember
         </section>
       </details>}
       {selected && <section className="assignment-list">
-        <div className="assignment-heading"><AssignmentIcon kind="people" /><h2>{strings.selectedMembers}</h2></div>
+        <div className="assignment-heading"><AssignmentIcon kind="people" /><h3>{strings.selectedMembers}</h3></div>
         <div className="assignment-candidate assignment-person"><Avatar name={selected.first_name} small /><p>{displayName(selected)}</p></div>
       </section>}
     </section>
