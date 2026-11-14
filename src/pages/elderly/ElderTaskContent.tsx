@@ -45,7 +45,7 @@ export function PlaceholderButton({ label, variant }: {
 
 export function ElderContactCard({ companion }: { companion: Member }) {
   return <div className="elder-card">
-    <h3 className="flex items-center gap-3 font-semibold"><Avatar name={companion.first_name} />{companion.first_name}</h3>
+    <h3 className="flex items-center gap-3 text-body-large font-medium"><Avatar name={companion.first_name} />{companion.first_name}</h3>
     <PlaceholderButton label={t.elderly.call} variant="outline" />
     <PlaceholderButton label={t.elderly.messages} variant="outline" />
   </div>
@@ -55,8 +55,8 @@ export function ElderTaskCard({ task, from }: { task: Task; from: 'home' | 'task
   const companion = useTaskCompanion(task)
   return <article className="elder-card">
     <header>
-      <p className="font-semibold text-btn-primary">{formatElderTaskDate(task.task_date)}</p>
-      <h3 className="elder-card-title">{task.title}</h3>
+      <p className="task-date-label">{formatElderTaskDate(task.task_date)}</p>
+      <h2 className="elder-card-title">{task.title}</h2>
     </header>
     <ElderTaskFacts task={task} />
     <CompanionPill companion={companion} />

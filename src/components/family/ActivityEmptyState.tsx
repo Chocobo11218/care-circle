@@ -9,7 +9,7 @@ export default function ActivityEmptyState({ elderly = false }: { elderly?: bool
   const copy = elderly ? t.elderly : t.familyTasks
   return <section className="family-empty-state activity-empty-state">
     <img src={calendarIllustration} alt={t.familyTasks.illustration} className="family-calendar" />
-    <h2>{copy.emptyTitle}</h2>
+    <h3>{copy.emptyTitle}</h3>
     <p>{copy.emptyDescription}</p>
     {!elderly && <Button className="family-pill family-action-button" onClick={() => navigate('/family/tasks/new')}><PlusIcon />{t.familyTasks.add}</Button>}
   </section>

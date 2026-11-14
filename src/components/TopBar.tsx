@@ -22,7 +22,7 @@ export default function TopBar({
           ←
         </button>
       )}
-      {title && <h1 className="text-xl font-semibold">{title}</h1>}
+      {title && <h1 className="text-h1 font-semibold">{title}</h1>}
     </header>
   )
 }

@@ -10,7 +10,7 @@ export default function TaskCard({ task, now }: { task: Task; now: Date }) {
   return <article className={`task-card ${needsAttention(task) ? 'task-needs-attention' : ''}`}>
     <Link to={`/family/tasks/${task.id}`} className="task-card-body" aria-label={t.taskList.open(task.title)}>
       <p className="task-date-label">{formatTaskDateLabel(task.task_date, now)}</p>
-      <h3>{task.title}</h3>
+      <h2>{task.title}</h2>
       <div className="task-divider" />
       <TaskFacts task={task} now={now} />
     </Link>

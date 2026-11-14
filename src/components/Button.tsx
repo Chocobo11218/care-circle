@@ -16,7 +16,7 @@ export default function Button({
   return (
     <button
       {...props}
-      className={`min-h-14 w-full rounded-xl border px-6 text-lg font-medium disabled:cursor-not-allowed disabled:opacity-40 ${styles[variant]} ${className}`}
+      className={`min-h-14 w-full rounded-xl border px-6 text-body-large font-medium disabled:cursor-not-allowed disabled:opacity-40 ${styles[variant]} ${className}`}
     />
   )
 }
