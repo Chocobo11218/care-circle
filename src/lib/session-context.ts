@@ -4,10 +4,11 @@ import type { Circle, Member } from '../types'
 export interface SessionValue {
   loading: boolean
   userId: string | null
+  isAnonymous: boolean
   me: Member | null
   circle: Circle | null
   ensureSignedIn: () => Promise<string>
-  refresh: () => Promise<void>
+  refresh: () => Promise<Member | null>
   resetDevice: () => Promise<void>
 }
 
