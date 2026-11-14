@@ -4,7 +4,7 @@ import Button from '../../components/Button'
 import Input from '../../components/Input'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { useSession } from '../../hooks/useSession'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import googleLogo from '../../assets/google.svg'
 
 export default function CreateAccount() {

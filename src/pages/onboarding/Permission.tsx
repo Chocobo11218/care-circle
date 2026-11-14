@@ -6,7 +6,7 @@ import PermissionSwitch from '../../components/PermissionSwitch'
 import { useDraft } from '../../hooks/useDraft'
 import { useSession } from '../../hooks/useSession'
 import { homePath, readPermission, writeLocal } from '../../lib/onboarding'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function Permission() {
   const { me } = useSession()

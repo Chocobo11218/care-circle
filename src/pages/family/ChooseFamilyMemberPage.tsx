@@ -1,3 +1,4 @@
+import { memberCopy } from '../../i18n/member-copy'
 import { useRef } from 'react'
 import Button from '../../components/Button'
 import TopBar from '../../components/TopBar'
@@ -7,7 +8,7 @@ import TaskFacts from '../../components/tasks/TaskFacts'
 import TaskIcon from '../../components/tasks/TaskIcon'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { splitAssignmentCandidates } from '../../lib/members'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import type { Member, Task } from '../../types'
 
 interface Props {
@@ -72,12 +73,12 @@ export default function ChooseFamilyMemberPage({ task, candidates, currentMember
             {label && <span className={`assignment-badge assignment-badge-${label}`}><AssignmentIcon kind={label} />{strings.labels[label]}</span>}
           </div>
           <div className="assignment-meta">
-            {member.availability && <span><AssignmentIcon kind="check" />{member.availability}</span>}
+            {member.availability && <span><AssignmentIcon kind="check" />{memberCopy(member.availability, member.is_mock)}</span>}
             {member.distance_km != null && <span><TaskIcon kind="location" />{strings.distance(member.distance_km)}</span>}
           </div>
           {!!member.match_reasons?.length && <details open={index === 0}>
             <summary>{strings.why}</summary>
-            <blockquote>{member.match_reasons.map((reason, index) => <p key={index}>{reason}</p>)}</blockquote>
+            <blockquote>{member.match_reasons.map((reason, index) => <p key={index}>{memberCopy(reason, member.is_mock)}</p>)}</blockquote>
           </details>}
           {selectButton(member)}
         </article>

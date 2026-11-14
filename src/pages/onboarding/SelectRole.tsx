@@ -3,7 +3,7 @@ import ChoiceCard from '../../components/ChoiceCard'
 import OnboardingIcon from '../../components/OnboardingIcon'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { useDraft } from '../../hooks/useDraft'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import type { Role } from '../../types'
 
 export default function SelectRole() {

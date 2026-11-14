@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom'
 import OnboardingLayout from './OnboardingLayout'
 import { useSession } from '../hooks/useSession'
 import { homePath } from '../lib/onboarding'
-import { t } from '../i18n/en'
+import { t } from '../i18n/index'
 import type { Role } from '../types'
 
 export default function HomeSummary({ role }: { role: Role }) {

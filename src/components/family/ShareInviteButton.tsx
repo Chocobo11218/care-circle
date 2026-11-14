@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 import Button from '../Button'
 import { useSession } from '../../hooks/useSession'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function ShareInviteButton({ label = t.familyAddMember.share, primary = false }: {
   label?: string

@@ -4,7 +4,7 @@ import Input from '../../components/Input'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { useDraft } from '../../hooks/useDraft'
 import { formatBirthday, isValidBirthday } from '../../lib/date'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function Birthday() {
   const { draft, update } = useDraft()

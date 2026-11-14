@@ -9,7 +9,7 @@ import { useFamilyTasks } from '../../hooks/useFamilyTasks'
 import { useFamilyMembers } from '../../hooks/useFamilyMembers'
 import { useLocalClock } from '../../hooks/useLocalClock'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function TaskDetails() {
   const { id } = useParams()

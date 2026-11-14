@@ -1,6 +1,6 @@
 import Button from '../Button'
 import { useFamilyTasks } from '../../hooks/useFamilyTasks'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function TaskFeedStatus() {
   const { loading, error, refetch } = useFamilyTasks()

@@ -2,7 +2,7 @@ import TaskCard from './TaskCard'
 import { taskSections } from '../../lib/tasks'
 import { useFamilyTasks } from '../../hooks/useFamilyTasks'
 import { useLocalClock } from '../../hooks/useLocalClock'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function TaskSections() {
   const { tasks } = useFamilyTasks()

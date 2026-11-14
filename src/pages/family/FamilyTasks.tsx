@@ -7,7 +7,7 @@ import { useFamilyTasks } from '../../hooks/useFamilyTasks'
 import TopBar from '../../components/TopBar'
 import ActivityEmptyState from '../../components/family/ActivityEmptyState'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function FamilyTasks() {
   useScreenEvent('/family/tasks')

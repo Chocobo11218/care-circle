@@ -1,5 +1,5 @@
 import Button from '../Button'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function MemberFeedStatus({ loading, error, retry }: { loading: boolean; error: boolean; retry: () => void }) {
   if (loading) return <div role="status" className="family-feed-status">{t.familyCommon.loading}</div>

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { t } from '../i18n/en'
+import { t } from '../i18n/index'
 
 export default function TopBar({
   title,

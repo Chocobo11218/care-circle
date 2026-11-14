@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Avatar from '../family/Avatar'
 import Button from '../Button'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import type { Member } from '../../types'
 
 export default function CareRecipientOptions({ members, selected, onChange, error, disabled }: {

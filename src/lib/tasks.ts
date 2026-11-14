@@ -1,7 +1,7 @@
 import type { Member, Task } from '../types'
 import type { TaskDraft } from './task-draft-context'
 import { localISODate, parseTaskDate } from './date'
-import { t } from '../i18n/en'
+import { t } from '../i18n/index'
 
 export interface TaskChange { eventType: 'INSERT' | 'UPDATE' | 'DELETE'; new: Partial<Task>; old: Partial<Task> }
 export function needsAttention(task: Task) { return task.assignee_id === null || careRecipientIds(task).length === 0 }

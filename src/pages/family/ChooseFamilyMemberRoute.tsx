@@ -12,7 +12,7 @@ import { useSession } from '../../hooks/useSession'
 import { useTaskDraft } from '../../hooks/useTaskDraft'
 import { assignmentCandidates, splitMembers } from '../../lib/members'
 import { selectedCareRecipients, taskInsert } from '../../lib/tasks'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function ChooseFamilyMemberRoute() {
   const { id } = useParams()

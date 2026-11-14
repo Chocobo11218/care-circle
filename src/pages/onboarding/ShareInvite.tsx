@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import Button from '../../components/Button'
 import OnboardingLayout from '../../components/OnboardingLayout'
 import { useSession } from '../../hooks/useSession'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function ShareInvite() {
   const { circle } = useSession()

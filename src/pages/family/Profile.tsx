@@ -4,7 +4,7 @@ import Button from '../../components/Button'
 import TopBar from '../../components/TopBar'
 import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function Profile() {
   const { resetDevice } = useSession()

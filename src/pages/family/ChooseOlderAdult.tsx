@@ -11,7 +11,7 @@ import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useUpdateTask } from '../../hooks/useUpdateTask'
 import { careRecipientIds } from '../../lib/tasks'
 import { splitMembers } from '../../lib/members'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function ChooseOlderAdult() {
   const { id } = useParams()

@@ -12,7 +12,7 @@ import { useScreenEvent } from '../../hooks/useScreenEvent'
 import { useSession } from '../../hooks/useSession'
 import { useTaskCompanion } from '../../hooks/useTaskCompanion'
 import { formatHomeDate } from '../../lib/date'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 import { ElderContactCard, ElderTaskCard } from './ElderTaskContent'
 
 export default function ElderlyHome() {

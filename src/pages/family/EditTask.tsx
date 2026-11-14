@@ -3,7 +3,7 @@ import CreateTask from './CreateTask'
 import TopBar from '../../components/TopBar'
 import TaskFeedStatus from '../../components/tasks/TaskFeedStatus'
 import { useFamilyTasks } from '../../hooks/useFamilyTasks'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function EditTask() {
   const { id } = useParams()

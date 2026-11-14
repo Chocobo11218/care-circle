@@ -1,9 +1,10 @@
+import { memberCopy } from '../../i18n/member-copy'
 import Avatar from './Avatar'
 import MemberFeedStatus from './MemberFeedStatus'
 import { useFamilyMembers } from '../../hooks/useFamilyMembers'
 import { orderedMembers } from '../../lib/members'
 import { joinedTime } from '../../lib/family'
-import { t } from '../../i18n/en'
+import { t } from '../../i18n/index'
 
 export default function MemberList() {
   const { members, loading, error, refetch } = useFamilyMembers()
@@ -16,7 +17,7 @@ export default function MemberList() {
         return <li key={member.id} className="family-member-card">
           <Avatar name={member.first_name} />
           <div className="min-w-0"><h3>{member.first_name}</h3>
-            {member.availability && <p>{member.availability}</p>}
+            {member.availability && <p>{memberCopy(member.availability, member.is_mock)}</p>}
             {time && <p>{t.familyMembers.since(time)}</p>}
           </div>
         </li>
